@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "QlGukbF14CwT7wOE9dRLc1iROutslRIY/t38mHnrBSpPNmMhGThyxDBpTST5fWUAMObauYWCg2ZIEGEZ05UR9A==",
+  "dgSpecHash": "wf9CIfxDuBvl4e/dw0bRuj5chmkl7adm3iQgpKySvUVTAuGpUOUpzhNis873YzFxeZycZczZPs3LI5+0IOe+cQ==",
   "success": true,
   "projectFilePath": "D:\\ojt\\Elibrary\\source\\LMS_Elibrary\\LMS_Elibrary\\LMS_Elibrary.csproj",
   "expectedPackageFiles": [
@@ -43,6 +43,7 @@
     "C:\\Users\\trant\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
     "C:\\Users\\trant\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
     "C:\\Users\\trant\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
+    "C:\\Users\\trant\\.nuget\\packages\\servicestack.interfaces\\8.0.0\\servicestack.interfaces.8.0.0.nupkg.sha512",
     "C:\\Users\\trant\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
     "C:\\Users\\trant\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
     "C:\\Users\\trant\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",

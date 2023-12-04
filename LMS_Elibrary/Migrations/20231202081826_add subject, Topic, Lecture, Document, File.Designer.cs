@@ -4,6 +4,7 @@ using LMS_Elibrary.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS_Elibrary.Migrations
 {
     [DbContext(typeof(ElibraryDbContext))]
-    partial class ElibraryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231202081826_add subject, Topic, Lecture, Document, File")]
+    partial class addsubjectTopicLectureDocumentFile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,7 +135,7 @@ namespace LMS_Elibrary.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("LectureID")
+                    b.Property<int>("LectureID")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -159,7 +161,7 @@ namespace LMS_Elibrary.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("DocumentId")
+                    b.Property<int>("DocumentId")
                         .HasColumnType("int");
 
                     b.Property<byte[]>("FileData")
@@ -199,20 +201,13 @@ namespace LMS_Elibrary.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Descriptions")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Descriptions")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TopicId")
+                    b.Property<int>("Title")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TopicId");
 
                     b.ToTable("Lectures");
                 });
@@ -227,6 +222,9 @@ namespace LMS_Elibrary.Migrations
 
                     b.Property<int>("ApprovalDocs")
                         .HasColumnType("int");
+
+                    b.Property<bool?>("Approved")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -410,7 +408,9 @@ namespace LMS_Elibrary.Migrations
                 {
                     b.HasOne("LMS_Elibrary.Data.Lecture", "Lecture")
                         .WithMany("Documents")
-                        .HasForeignKey("LectureID");
+                        .HasForeignKey("LectureID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Lecture");
                 });
@@ -419,18 +419,11 @@ namespace LMS_Elibrary.Migrations
                 {
                     b.HasOne("LMS_Elibrary.Data.Document", "Document")
                         .WithMany("Files")
-                        .HasForeignKey("DocumentId");
+                        .HasForeignKey("DocumentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Document");
-                });
-
-            modelBuilder.Entity("LMS_Elibrary.Data.Lecture", b =>
-                {
-                    b.HasOne("LMS_Elibrary.Data.Topic", "Topic")
-                        .WithMany()
-                        .HasForeignKey("TopicId");
-
-                    b.Navigation("Topic");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.Topic", b =>

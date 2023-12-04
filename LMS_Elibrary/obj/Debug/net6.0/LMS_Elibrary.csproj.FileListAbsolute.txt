@@ -74,3 +74,4 @@ D:\ojt\Elibrary\source\LMS_Elibrary\LMS_Elibrary\obj\Debug\net6.0\refint\LMS_Eli
 D:\ojt\Elibrary\source\LMS_Elibrary\LMS_Elibrary\obj\Debug\net6.0\LMS_Elibrary.pdb
 D:\ojt\Elibrary\source\LMS_Elibrary\LMS_Elibrary\obj\Debug\net6.0\LMS_Elibrary.genruntimeconfig.cache
 D:\ojt\Elibrary\source\LMS_Elibrary\LMS_Elibrary\obj\Debug\net6.0\ref\LMS_Elibrary.dll
+D:\ojt\Elibrary\source\LMS_Elibrary\LMS_Elibrary\bin\Debug\net6.0\ServiceStack.Interfaces.dll

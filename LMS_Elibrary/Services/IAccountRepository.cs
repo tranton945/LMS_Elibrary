@@ -19,5 +19,6 @@ namespace LMS_Elibrary.Services
         public Task<bool> DeleteAccount(string email);
 
         public Task<AccountWithRolesDto> GetAccountRole(string email);
+        public Task<List<AccountWithRolesDto>> GetAllAccountRole();
     }
 }

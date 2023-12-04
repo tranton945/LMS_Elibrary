@@ -219,10 +219,37 @@ namespace LMS_Elibrary.Services
             {
                 UserName = accounts.UserName,
                 Email = accounts.Email,
+                Name = accounts.Name,
                 Roles = roles.ToList()
             };
 
             return accountWithRoles;
+        }
+
+        public async Task<List<AccountWithRolesDto>> GetAllAccountRole()
+        {
+            var accounts = await _userManager.Users.ToArrayAsync();
+            if (accounts.Count() == 0)
+            {
+                return new List<AccountWithRolesDto>();
+            }
+            var result = new List<AccountWithRolesDto>();
+            foreach( var account in accounts)
+            {
+                var roles = await _userManager.GetRolesAsync(account);
+
+                var accountWithRoles = new AccountWithRolesDto
+                {
+                    UserName = account.UserName,
+                    Email = account.Email,
+                    Name = account.Name,
+                    Roles = roles.ToList()
+                };
+                result.Add(accountWithRoles);
+            }
+
+            return result;
+
         }
     }
 }

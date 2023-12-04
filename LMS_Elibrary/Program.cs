@@ -18,6 +18,11 @@ builder.Services.AddDbContext<ElibraryDbContext>(options =>
 builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
+builder.Services.AddScoped<ITopicRepository, TopicRepository>();
+builder.Services.AddScoped<ILectureRepository, LectureRepository>();
+builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
+builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<IRoles, Roles>();
 builder.Services.AddScoped<GetUser>();
 builder.Services.AddScoped<CreateAdminAccount>();
