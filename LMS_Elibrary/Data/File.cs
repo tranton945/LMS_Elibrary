@@ -12,8 +12,6 @@ namespace LMS_Elibrary.Data
         public byte[] FileData { get; set; }
         public string FileType { get; set; }
         public int FileSize { get; set; }
-        public string Updator { get; set; }
-        public DateTime LastUpdate { get; set; }
 
         public int? DocumentId { get; set; }
         [ForeignKey(nameof(DocumentId))]

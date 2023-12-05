@@ -51,6 +51,12 @@ namespace LMS_Elibrary.Services
             return result;
         }
 
+        public async Task<List<Topic>> GetBySubjectId(int id)
+        {
+            var result = await _context.Topics.Where(i => i.SubjectId == id).OrderByDescending(i => i.Id).ToListAsync();
+            return result;
+        }
+
         public async Task<bool> Update(Topic topic, int id)
         {
             var result = await _context.Topics.SingleOrDefaultAsync(i => i.Id == id);

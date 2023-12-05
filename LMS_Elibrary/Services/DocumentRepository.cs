@@ -19,11 +19,12 @@ namespace LMS_Elibrary.Services
             var isuser = await _user.user();
             var doc = new Document
             {
-                Name = document.Name,
                 Type = document.Type,
                 Creator = isuser.UserName,
                 Date= DateTime.Now,
                 Approved = null,
+                Approver = null,
+                Note = null,
                 LectureID = document.LectureID,
             };
             _context.Add(doc);
@@ -49,12 +50,50 @@ namespace LMS_Elibrary.Services
             return result;
         }
 
+        public async Task<List<DocumentInfo>> GetAllDocInfor()
+        {
+            var result = await _context.Documents
+                                    .Include(a => a.Lecture)
+                                        .ThenInclude(a => a.Topic)
+                                            .ThenInclude(a => a.Subject)
+                                    .Where(doc => doc.File != null && doc.File.FileName != null) // Lọc bỏ những Document có DocName là null
+                                    .Select(doc => new DocumentInfo
+                                    {
+                                        Doc = doc,
+                                        SubjectName = doc.Lecture.Topic.Subject.SubjectName,
+                                        DocName = doc.File.FileName
+                                    })
+                                    .OrderByDescending(id => id.Doc.Id)
+                                    .ToListAsync();
+            return result;
+        }
+
         public async Task<Document> GetById(int id)
         {
             var result = await _context.Documents.SingleOrDefaultAsync(x => x.Id == id);
             if (result == null)
             {
                 return new Document();
+            }
+            return result;
+        }
+
+        public async Task<DocumentInfo> GetDocInforById(int id)
+        {
+            var result = await _context.Documents
+                                    .Include(a => a.Lecture)
+                                        .ThenInclude(a => a.Topic)
+                                            .ThenInclude(a => a.Subject)
+                                    .Select(doc => new DocumentInfo
+                                    {
+                                        Doc = doc,
+                                        SubjectName = doc.Lecture.Topic.Subject.SubjectName,
+                                        DocName = doc.File.FileName
+                                    })
+                                    .SingleOrDefaultAsync(i => i.Doc.Id == id);
+            if (result == null)
+            {
+                return new DocumentInfo();
             }
             return result;
         }
@@ -68,7 +107,6 @@ namespace LMS_Elibrary.Services
             }
             if(document != null)
             {
-                result.Name = document.Name ?? result.Name;
                 result.Type = document.Type ?? result.Type;
                 result.LectureID = document.LectureID ?? result.LectureID;
                 await _context.SaveChangesAsync();

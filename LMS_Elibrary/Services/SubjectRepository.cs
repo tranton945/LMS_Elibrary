@@ -77,7 +77,12 @@ namespace LMS_Elibrary.Services
 
         public async Task<Subject> GetById(int id)
         {
-            var result = await _context.Subjects.SingleOrDefaultAsync(i => i.Id == id);
+            var result = await _context.Subjects
+                                    .Include(a => a.Topics)
+                                    .ThenInclude(a =>a.Lecture)
+                                    .ThenInclude(a => a.Documents)
+                                    .ThenInclude(a => a.File)
+                                    .SingleOrDefaultAsync(i => i.Id == id);
             if (result == null)
             {
                 return new Subject { };

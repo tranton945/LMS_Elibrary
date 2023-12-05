@@ -15,6 +15,15 @@ namespace LMS_Elibrary.Services
         }
         public async Task<Data.File> Add(IFormFile file, int docId)
         {
+            var existingFile = await _context.Files.FirstOrDefaultAsync(f => f.DocumentId == docId);
+
+            if (existingFile != null)
+            {
+                // Nếu tồn tại, trả ra một exception
+                throw new InvalidOperationException("File with the same DocumentId already exists.");
+
+            }
+
             var isuser = await _getUser.user();
             var _file = new Data.File
             {
@@ -22,8 +31,6 @@ namespace LMS_Elibrary.Services
                 FileData = await ConvertFormFileToByteArray(file),
                 FileType = file.ContentType,
                 FileSize = (int)file.Length,
-                Updator = isuser.UserName,
-                LastUpdate = DateTime.UtcNow,
                 DocumentId = docId
             };
             _context.Files.Add(_file);

@@ -54,6 +54,40 @@ namespace LMS_Elibrary.Controllers
                 return BadRequest();
             }
         }
+        [HttpGet("GetDocInforById")]
+        public async Task<IActionResult> GetDocInforById(int id)
+        {
+            try
+            {
+                if (await _blacklistService.CheckJWT() == true)
+                {
+                    return BadRequest("access token invalid");
+                }
+                var result = await _document.GetDocInforById(id);
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet("GetAddDocInfor")]
+        public async Task<IActionResult> GetAddDocInfor()
+        {
+            try
+            {
+                if (await _blacklistService.CheckJWT() == true)
+                {
+                    return BadRequest("access token invalid");
+                }
+                var result = await _document.GetAllDocInfor();
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById(int id)
         {
