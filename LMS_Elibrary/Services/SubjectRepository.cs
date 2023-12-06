@@ -55,14 +55,8 @@ namespace LMS_Elibrary.Services
             return result;
         }
 
-        public async Task<List<string>> GetAllTeacher(List<AccountWithRolesDto> listAccount)
+        public async Task<List<string>> GetAllTeacher()
         {
-            //var account = await _account.GetAllAccountRole();
-            //var teacherNames = listAccount
-            //        .Where(dto => dto.Roles.Any(role => role == "Teacher"))
-            //        .Select(dto => dto.Name)
-            //        .OrderBy(str => str)
-            //        .ToList();
             var result = await _context.Subjects
                     .Select(s => s.Teacher)
                     .OrderBy(str => str)
@@ -121,45 +115,6 @@ namespace LMS_Elibrary.Services
             return result;
         }
 
-        public async Task<List<Subject>> GetSubjectByApprove(int id)
-        {
-            //// chờ phê duyệt
-            //if(id == 0)
-            //{
-            //    var result0 = await _context.Subjects
-            //                    .Where(s => s.Approved == null)
-            //                    .OrderByDescending(d => d.Date)
-            //                    .ToListAsync();
-            //}
-            //// Đã phê duyệt
-            //if (id == 1)
-            //{
-            //    var result1 = await _context.Subjects
-            //                    .Where(s => s.Approved != null)
-            //                    .OrderByDescending(d => d.Date)
-            //                    .ToListAsync();
-            //}
-            //// Phê duyệt
-            //if (id == 2)
-            //{
-            //    var result2 = await _context.Subjects
-            //                    .Where(s => s.Approved == true)
-            //                    .OrderByDescending(d => d.Date)
-            //                    .ToListAsync();
-            //}
-            //// Hủy
-            //if (id == 3)
-            //{
-            //    var result3 = await _context.Subjects
-            //                    .Where(s => s.Approved == false)
-            //                    .OrderByDescending(d => d.Date)
-            //                    .ToListAsync();
-            //}
-
-            return new List<Subject> { };
-
-        }
-
         public async Task<List<Subject>> GetSubjectByName(string _subjectName)
         {
             var result = await _context.Subjects
@@ -168,7 +123,7 @@ namespace LMS_Elibrary.Services
                                 .ToListAsync();
             if(result == null)
             {
-                return new List<Subject> { };
+                return new List<Subject>();
             }
             return result;
         }

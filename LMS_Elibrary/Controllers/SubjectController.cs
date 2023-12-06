@@ -123,7 +123,7 @@ namespace LMS_Elibrary.Controllers
                     return BadRequest("access token invalid");
                 }
                 var listAccount = await _account.GetAllAccountRole();
-                var result = await _subject.GetAllTeacher(listAccount);
+                var result = await _subject.GetAllTeacher();
                 return Ok(result);
             }
             catch

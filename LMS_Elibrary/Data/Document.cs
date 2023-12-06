@@ -17,6 +17,8 @@ namespace LMS_Elibrary.Data
         public DateTime Date { get; set; }
         public bool? Approved { get; set; }
         public string? Approver { get; set; }
+        public DateTime? ApproveDate { get; set; }
+
         public string? Note { get; set; }
 
         public int? LectureID { get; set; }
