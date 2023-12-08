@@ -29,7 +29,7 @@ namespace LMS_Elibrary.Services
             {
                 FileName = file.FileName,
                 FileData = await ConvertFormFileToByteArray(file),
-                FileType = file.ContentType,
+                FileType = Path.GetExtension(file.FileName),
                 FileSize = (int)file.Length,
                 DocumentId = docId
             };

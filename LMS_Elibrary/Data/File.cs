@@ -18,5 +18,9 @@ namespace LMS_Elibrary.Data
         [JsonIgnore]
         public Document? Document { get; set; }
 
+        public int? PrivateFilesId { get; set; }
+        [ForeignKey(nameof(PrivateFilesId))]
+        [JsonIgnore]
+        public PrivateFile? PrivateFile { get; set; }
     }
 }

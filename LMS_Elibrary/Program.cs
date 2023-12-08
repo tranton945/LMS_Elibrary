@@ -23,6 +23,7 @@ builder.Services.AddScoped<ITopicRepository, TopicRepository>();
 builder.Services.AddScoped<ILectureRepository, LectureRepository>();
 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
+builder.Services.AddScoped<IPrivateFilesRepository, PrivateFilesRepository>();
 builder.Services.AddScoped<IRoles, Roles>();
 builder.Services.AddScoped<GetUser>();
 builder.Services.AddScoped<CreateAdminAccount>();
