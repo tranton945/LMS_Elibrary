@@ -9,13 +9,15 @@ namespace LMS_Elibrary.Services
     {
         private readonly ElibraryDbContext _context;
         private readonly GetUser _user;
+        private readonly ISubjectRepository _subjectRepository;
 
-        public DocumentRepository(ElibraryDbContext context, GetUser user) 
+        public DocumentRepository(ElibraryDbContext context, GetUser user, ISubjectRepository subjectRepository) 
         {
             _context = context;
             _user = user;
+            _subjectRepository = subjectRepository;
         } 
-        public async Task<Document> Add(Document document)
+        public async Task<Document> Add(Document document, IFormFile file)
         {
             var isuser = await _user.user();
             var doc = new Document
@@ -29,14 +31,48 @@ namespace LMS_Elibrary.Services
                 Note = null,
                 LectureID = document.LectureID,
             };
-            _context.Add(doc);
+            _context.Documents.Add(doc);
             await _context.SaveChangesAsync();
+
+            var _file = new Data.File
+            {
+                FileName = file.FileName,
+                FileData = await ConvertFormFileToByteArray(file),
+                FileType = Path.GetExtension(file.FileName),
+                FileSize = (int)file.Length,
+                DocumentId = doc.Id,
+                PrivateFilesId = null
+            };
+            _context.Files.Add(_file);
+            await _context.SaveChangesAsync();
+
+            // get subjectId to call UpdateApproveDoc()
+            var Document = await _context.Documents
+                                    .Include(a => a.Lecture)
+                                    .ThenInclude(a => a.Topic)
+                                    .ThenInclude(a => a.Subject)
+                                    .SingleOrDefaultAsync(d => d.Id == doc.Id);
+
+            var subId = Document.Lecture.Topic.Subject.Id;
+            await _subjectRepository.UpdateApproveDoc(subId);
             return doc;
+        }
+        private async Task<byte[]> ConvertFormFileToByteArray(IFormFile formFile)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await formFile.CopyToAsync(memoryStream);
+                return memoryStream.ToArray();
+            }
         }
 
         public async Task<bool> ApproveDoc(int id)
         {
-            var result = await _context.Documents.SingleOrDefaultAsync(x => x.Id == id);
+            var result = await _context.Documents
+                                    .Include(a => a.Lecture)
+                                    .ThenInclude(a => a.Topic)
+                                    .ThenInclude(a => a.Subject)
+                                    .SingleOrDefaultAsync(x => x.Id == id);
             if (result == null || result.Approved != null)
             {
                 return false;
@@ -46,25 +82,33 @@ namespace LMS_Elibrary.Services
             result.Approver = isuser.Name;
             result.ApproveDate = DateTime.Now.Date;
 
+            var subId = result.Lecture.Topic.Subject.Id;
+            await _subjectRepository.UpdateApproveDoc(subId);
+
             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> Delete(int id)
         {
-            var result = await _context.Documents.SingleOrDefaultAsync(x => x.Id == id);
+            var result = await _context.Documents.Include(a => a.File).SingleOrDefaultAsync(x => x.Id == id);
             if(result == null)
             {
                 return false;
             }
-            _context.Documents.Remove(result);
+            _context.RemoveRange(result.File);
+            _context.Remove(result);
             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> DoNotApproveDoc(DoNotApproveDocument doNotApproveDocument)
         {
-            var result = await _context.Documents.SingleOrDefaultAsync(x => x.Id == doNotApproveDocument.DocumentId);
+            var result = await _context.Documents
+                                    .Include(a => a.Lecture)
+                                    .ThenInclude(a => a.Topic)
+                                    .ThenInclude(a => a.Subject)
+                                    .SingleOrDefaultAsync(x => x.Id == doNotApproveDocument.DocumentId);
             if (result == null || result.Approved != null)
             {
                 return false;
@@ -72,6 +116,9 @@ namespace LMS_Elibrary.Services
             result.Approved = false;
             result.Approver = doNotApproveDocument.Approver;
             result.ApproveDate = doNotApproveDocument.ApproveDate;
+
+            var subId = result.Lecture.Topic.Subject.Id;
+            await _subjectRepository.UpdateApproveDoc(subId);
 
             await _context.SaveChangesAsync();
             return true;
@@ -102,7 +149,7 @@ namespace LMS_Elibrary.Services
                                     .Include(a => a.Lecture)
                                         .ThenInclude(a => a.Topic)
                                             .ThenInclude(a => a.Subject)
-                                    .Where(doc => doc.File != null && doc.File.FileName != null) // Lọc bỏ những Document có DocName là null
+                                    .Where(doc => doc.File != null && doc.File.FileName != null)
                                     .Select(doc => new DocumentInfo
                                     {
                                         Doc = doc,

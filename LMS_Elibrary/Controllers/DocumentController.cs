@@ -23,7 +23,7 @@ namespace LMS_Elibrary.Controllers
         }
 
         [HttpPost("Add")]
-        public async Task<IActionResult> Add(Document document)
+        public async Task<IActionResult> Add([FromForm] Document document, IFormFile file)
         {
             try
             {
@@ -31,7 +31,7 @@ namespace LMS_Elibrary.Controllers
                 {
                     return BadRequest("access token invalid");
                 }
-                var result = await _document.Add(document);
+                var result = await _document.Add(document, file);
                 return Ok(result);
             }
             catch

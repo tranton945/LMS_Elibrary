@@ -1,4 +1,5 @@
 ﻿using LMS_Elibrary.Data;
+using LMS_Elibrary.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Principal;
 
@@ -21,7 +22,7 @@ namespace LMS_Elibrary.Services
                 Teacher = subject.Teacher,
                 Date = DateTime.Now,
                 Descriptions = subject.Descriptions,
-                ApprovalDocs = 0,
+                ApprovalDocs = null
             };
             _context.AddAsync(_subject);
             await _context.SaveChangesAsync();
@@ -30,19 +31,70 @@ namespace LMS_Elibrary.Services
 
         public async Task<bool> Delete(int id)
         {
-            var result = await _context.Subjects.SingleOrDefaultAsync(i => i.Id == id);
-            if (result == null)
+            var subject = await _context.Subjects
+                            .Include(s => s.Topics)
+                            .ThenInclude(t => t.Lecture)
+                            .ThenInclude(l => l.Documents)
+                            .SingleOrDefaultAsync(i => i.Id == id);
+            if (subject == null)
             {
                 return false;
             }
-            _context.Remove(result);
+            var documents = await _context.Documents
+                         .Include(a => a.Lecture)
+                             .ThenInclude(a => a.Topic)
+                                 .ThenInclude(a => a.Subject)
+                         .Where(s => s.Lecture.Topic.Subject.Id == id)
+                         .OrderByDescending(id => id.Date)
+                         .ToListAsync();
+            // update all LectureID of document to null
+            foreach (var document in documents)
+            {
+                document.LectureID = null;
+            }
+            _context.Lectures.RemoveRange(subject.Topics.SelectMany(t => t.Lecture));
+            _context.Topics.RemoveRange(subject.Topics);
+            _context.Remove(subject);
+            await _context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<List<Subject>> GetAll()
+        public async Task<List<SubjectLeadershipDTO>> GetAll()
         {
-            var result = await _context.Subjects.OrderByDescending(d => d.Date).ToListAsync();
-            return result;
+            var subjects = await _context.Subjects
+                .Include(a => a.Topics)
+                    .ThenInclude(a => a.Lecture)
+                        .ThenInclude(a => a.Documents)
+                .OrderByDescending(a => a.Date)
+                .ToListAsync();
+
+            var SubjectLeadership = CreateListSubjectTeacherDTO(subjects);
+
+            return SubjectLeadership;
+        }
+        public async Task UpdateApproveDoc(int Id)
+        {
+            var subject = await _context.Subjects
+                .Include(a => a.Topics)
+                    .ThenInclude(a => a.Lecture)
+                        .ThenInclude(a => a.Documents)
+                .SingleOrDefaultAsync(s => s.Id == Id);
+
+            if (subject != null)
+            {
+                int totalDocuments = subject.Topics
+                    .SelectMany(t => t.Lecture.SelectMany(l => l.Documents))
+                    .Count();
+
+                int approvedDocuments = subject.Topics
+                    .SelectMany(t => t.Lecture.SelectMany(l => l.Documents))
+                    .Count(d => d.Approved == true);
+
+                subject.ApprovalDocs = $"{approvedDocuments}/{totalDocuments}";
+
+                _context.Update(subject);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task<List<string>> GetAllSubjectName()
@@ -52,6 +104,7 @@ namespace LMS_Elibrary.Services
                                 .OrderBy(str => str)
                                 .Distinct()
                                 .ToListAsync();
+            result.Insert(0, "Tất cả môn học");
             return result;
         }
 
@@ -62,10 +115,7 @@ namespace LMS_Elibrary.Services
                     .OrderBy(str => str)
                     .Distinct()
                     .ToListAsync();
-            if (result.Count() == 0 || result == null)
-            {
-                return new List<string>();
-            }
+            result.Insert(0, "Tất cả giảng viên");
             return result;
         }
 
@@ -103,7 +153,7 @@ namespace LMS_Elibrary.Services
 
             return timeRanges;
         }
-        public async Task<List<Subject>> GetSubjectBySchoolYear(string schoolYear)
+        public async Task<List<SubjectLeadershipDTO>> GetSubjectBySchoolYear(string schoolYear)
         {
             var _schoolYear = schoolYear.Split("-");
             // get frist year and convert to int
@@ -112,47 +162,51 @@ namespace LMS_Elibrary.Services
                             .Where(s => s.Date.Year == year)
                             .OrderByDescending(d => d.Date)
                             .ToListAsync();
-            return result;
+            var SubjectLeadership = CreateListSubjectTeacherDTO(result);
+            return SubjectLeadership;
         }
 
-        public async Task<List<Subject>> GetSubjectByName(string _subjectName)
+        public async Task<List<SubjectLeadershipDTO>> GetSubjectByName(string _subjectName)
         {
             var result = await _context.Subjects
-                                .Where(s => s.SubjectName == _subjectName)
                                 .OrderByDescending(d => d.Date)
                                 .ToListAsync();
-            if(result == null)
+            var SubjectLeadership = CreateListSubjectTeacherDTO(result);
+
+            if(_subjectName.ToLower() == "tất cả môn học")
             {
-                return new List<Subject>();
+                return SubjectLeadership;
             }
-            return result;
+            var _SubjectLeadership = SubjectLeadership.Where(s => s.SubjectName == _subjectName).ToList();
+            return _SubjectLeadership;
         }
 
-        public async Task<List<Subject>> GetSubjectByTeacher(string teacher)
+        public async Task<List<SubjectLeadershipDTO>> GetSubjectByTeacher(string teacher)
         {
             var result = await _context.Subjects
-                    .Where(s => s.Teacher == teacher)
+                    //.Where(s => s.Teacher == teacher)
                     .OrderByDescending(d => d.Date)
                     .ToListAsync();
-            if (result == null)
+            var SubjectLeadership = CreateListSubjectTeacherDTO(result);
+            if (teacher.ToLower() == "tất cả giảng viên")
             {
-                return new List<Subject>();
+                return SubjectLeadership;
             }
-            return result;
+            var _SubjectLeadership = SubjectLeadership.Where(s => s.Teacher == teacher).ToList();
+            return _SubjectLeadership;
 
         }
 
-        public async Task<List<Subject>> Search(string searchString)
+        public async Task<List<SubjectLeadershipDTO>> Search(string searchString)
         {
             var result = await _context.Subjects
                     .Where(s => s.Teacher.Contains(searchString) || s.SubjectId.Contains(searchString) || s.SubjectName.Contains(searchString))
                     .OrderByDescending(d => d.Date)
                     .ToListAsync();
-            if (result == null)
-            {
-                return new List<Subject>();
-            }
-            return result;
+
+            var SubjectLeadership = CreateListSubjectTeacherDTO(result);
+
+            return SubjectLeadership;
         }
 
         public async Task<bool> Update(Subject subject, int id)
@@ -169,6 +223,84 @@ namespace LMS_Elibrary.Services
 
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<List<SubjectTeacherDTO>> GetAllRoleTeacher()
+        {
+            var subjects = await _context.Subjects
+                                .Include(a => a.Topics)
+                                    .ThenInclude(a => a.Lecture)
+                                        .ThenInclude(a => a.Documents)
+                                .ToListAsync();
+
+            var SubjectTeacher = subjects.Select(sub => new SubjectTeacherDTO
+            {
+                SubjectID = sub.SubjectId,
+                SubjectName = sub.SubjectName,
+                Descriptions = sub.Descriptions,
+                // tính toán để có được số doc đã phê duyệt / tổng doc
+                ApproveDoc = $"{sub.Topics.Sum(t => t.Lecture.Sum(l => l.Documents.Count(d => d.Approved == true)))}/" +
+                             $"{sub.Topics.Sum(t => t.Lecture.Sum(l => l.Documents.Count()))}",
+                // tính toán để kiểm tra  số doc đã phê duyệt = tổng doc
+                // 
+                Status = sub.Topics.Sum(t => t.Lecture.Sum(l => l.Documents.Count(d => d.Approved == true))) == sub.Topics.Sum(t => t.Lecture.Sum(l => l.Documents.Count()))
+                        ? "Đã phê duyệt"
+                        : "Chờ phê duyệt"
+            }).ToList();
+
+            return SubjectTeacher;
+        }
+
+
+        private List<SubjectLeadershipDTO> CreateListSubjectTeacherDTO(List<Subject> subjects)
+        {
+            var SubjectLeadership = subjects.Select(sub => new SubjectLeadershipDTO
+            {
+                ID = sub.Id,
+                SubjectID = sub.SubjectId,
+                SubjectName = sub.SubjectName,
+                Teacher = sub.Teacher,
+                Date = sub.Date,
+                ApproveDoc = sub.ApprovalDocs,
+                Status = (sub.ApprovalDocs?.Split("/").Length == 2 && sub.ApprovalDocs.Split("/")[0] == sub.ApprovalDocs.Split("/")[1]) ? "Đã phê duyệt" : "Chờ phê duyệt"
+            }).ToList();
+            return SubjectLeadership;
+        }
+
+        public Task<List<string>> GetApproveDocType()
+        {
+            List<string> result = new List<string>
+            {
+                "Tất cả tình trạng",
+                "Chờ phê duyệt",
+                "Đã phê duyệt",
+            };
+            return Task.FromResult(result);
+        }
+        public async Task<List<SubjectLeadershipDTO>> GetSubjectByApproveDocType(string type)
+        {
+            var result = await _context.Subjects
+                        .OrderByDescending(d => d.Date)
+                        .ToListAsync();
+            var SubjectLeadership = CreateListSubjectTeacherDTO(result);
+            if (type.ToLower() == "tất cả tình trạng")
+            {
+                return SubjectLeadership;
+            }
+            if (type.ToLower() == "chờ phê duyệt")
+            {
+                var result1 = SubjectLeadership.Where(a => a.Status.ToLower() == "chờ phê duyệt").ToList();
+
+                return result1;
+            }
+            if (type.ToLower() == "đã phê duyệt")
+            {
+                var result2 = SubjectLeadership.Where(a => a.Status.ToLower() == "đã phê duyệt").ToList();
+
+                return result2;
+            }
+
+            return new List<SubjectLeadershipDTO>();
         }
     }
 }

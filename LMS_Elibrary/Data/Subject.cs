@@ -16,7 +16,7 @@ namespace LMS_Elibrary.Data
         public DateTime Date { get; set; }
         [Required]
         public string Descriptions { get; set; }
-        public int? ApprovalDocs { get; set; }
+        public string? ApprovalDocs { get; set; }
         
         
         public ICollection<Topic>? Topics { get; set; }

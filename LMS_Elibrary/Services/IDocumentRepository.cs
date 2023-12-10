@@ -9,7 +9,7 @@ namespace LMS_Elibrary.Services
         public Task<Document> GetById(int id);
         public Task<DocumentInfo> GetDocInforById(int id);
         public Task<List<DocumentInfo>> GetAllDocInfor();
-        public Task<Document> Add(Document document);
+        public Task<Document> Add(Document document, IFormFile files);
         public Task<bool> Update(Document document, int id);
         public Task<bool> ApproveDoc(int id);
         public Task<bool> DoNotApproveDoc(DoNotApproveDocument doNotApproveDocument);
