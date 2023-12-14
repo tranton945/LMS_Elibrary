@@ -15,5 +15,7 @@ namespace LMS_Elibrary.Data
         public DbSet<Document> Documents { get; set; }
         public DbSet<File> Files { get; set; }
         public DbSet<PrivateFile> PrivateFiles { get; set; }
+        public DbSet<SubAccessHistory> SubAccessHistories { get; set; }
+        public DbSet<ClassRoom> ClassRooms { get; set; }
     }
 }

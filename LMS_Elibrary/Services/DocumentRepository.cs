@@ -139,7 +139,10 @@ namespace LMS_Elibrary.Services
 
         public async Task<List<Document>> GetAll()
         {
-            var result = await _context.Documents.ToListAsync();
+            var result = await _context.Documents
+                                    .Include(s => s.File)
+                                    .Where(a => a.File.PrivateFile != null)
+                                    .ToListAsync();
             return result;
         }
 

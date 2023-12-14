@@ -11,14 +11,16 @@ namespace LMS_Elibrary.Data
         [Required]
         public string SubjectName { get; set; }
         public string? Teacher { get; set; }
-        //public bool? Approved { get; set; }
+
         [Required]
         public DateTime Date { get; set; }
         [Required]
         public string Descriptions { get; set; }
         public string? ApprovalDocs { get; set; }
-        
-        
+
+        //public DateTime? LastTeacherAccessedDate { get; set; }
+        public ICollection<SubAccessHistory> SubAccessHistories { get; set; }
         public ICollection<Topic>? Topics { get; set; }
+        public ICollection<ClassRoom>? Classes { get; set; }
     }
 }

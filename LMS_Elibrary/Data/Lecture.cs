@@ -10,8 +10,9 @@ namespace LMS_Elibrary.Data
         public int Id { get; set; }
         [Required]
         public string Title { get; set; }
-        [Required]
-        public string Descriptions { get; set; }
+
+        public string? Descriptions { get; set; }
+
 
         public int? TopicId { get; set; }
         [ForeignKey(nameof(TopicId))]

@@ -115,6 +115,32 @@ namespace LMS_Elibrary.Migrations
                     b.ToTable("BlacklistedTokens");
                 });
 
+            modelBuilder.Entity("LMS_Elibrary.Data.ClassRoom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ClassRoomId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClassRoomName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("ClassRooms");
+                });
+
             modelBuilder.Entity("LMS_Elibrary.Data.Document", b =>
                 {
                     b.Property<int>("Id")
@@ -206,7 +232,6 @@ namespace LMS_Elibrary.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Descriptions")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -241,6 +266,30 @@ namespace LMS_Elibrary.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PrivateFiles");
+                });
+
+            modelBuilder.Entity("LMS_Elibrary.Data.SubAccessHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("AccessDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("SubAccessHistories");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.Subject", b =>
@@ -432,6 +481,17 @@ namespace LMS_Elibrary.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("LMS_Elibrary.Data.ClassRoom", b =>
+                {
+                    b.HasOne("LMS_Elibrary.Data.Subject", "Subject")
+                        .WithMany("Classes")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subject");
+                });
+
             modelBuilder.Entity("LMS_Elibrary.Data.Document", b =>
                 {
                     b.HasOne("LMS_Elibrary.Data.Lecture", "Lecture")
@@ -463,6 +523,17 @@ namespace LMS_Elibrary.Migrations
                         .HasForeignKey("TopicId");
 
                     b.Navigation("Topic");
+                });
+
+            modelBuilder.Entity("LMS_Elibrary.Data.SubAccessHistory", b =>
+                {
+                    b.HasOne("LMS_Elibrary.Data.Subject", "Subject")
+                        .WithMany("SubAccessHistories")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subject");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.Topic", b =>
@@ -544,6 +615,10 @@ namespace LMS_Elibrary.Migrations
 
             modelBuilder.Entity("LMS_Elibrary.Data.Subject", b =>
                 {
+                    b.Navigation("Classes");
+
+                    b.Navigation("SubAccessHistories");
+
                     b.Navigation("Topics");
                 });
 

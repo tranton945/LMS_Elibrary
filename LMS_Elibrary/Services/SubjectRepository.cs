@@ -62,13 +62,13 @@ namespace LMS_Elibrary.Services
         public async Task<List<SubjectLeadershipDTO>> GetAll()
         {
             var subjects = await _context.Subjects
-                .Include(a => a.Topics)
-                    .ThenInclude(a => a.Lecture)
-                        .ThenInclude(a => a.Documents)
+                //.Include(a => a.Topics)
+                //    .ThenInclude(a => a.Lecture)
+                //        .ThenInclude(a => a.Documents)
                 .OrderByDescending(a => a.Date)
                 .ToListAsync();
 
-            var SubjectLeadership = CreateListSubjectTeacherDTO(subjects);
+            var SubjectLeadership = CreateListSubjectLeadership(subjects);
 
             return SubjectLeadership;
         }
@@ -162,7 +162,7 @@ namespace LMS_Elibrary.Services
                             .Where(s => s.Date.Year == year)
                             .OrderByDescending(d => d.Date)
                             .ToListAsync();
-            var SubjectLeadership = CreateListSubjectTeacherDTO(result);
+            var SubjectLeadership = CreateListSubjectLeadership(result);
             return SubjectLeadership;
         }
 
@@ -171,7 +171,7 @@ namespace LMS_Elibrary.Services
             var result = await _context.Subjects
                                 .OrderByDescending(d => d.Date)
                                 .ToListAsync();
-            var SubjectLeadership = CreateListSubjectTeacherDTO(result);
+            var SubjectLeadership = CreateListSubjectLeadership(result);
 
             if(_subjectName.ToLower() == "tất cả môn học")
             {
@@ -184,10 +184,9 @@ namespace LMS_Elibrary.Services
         public async Task<List<SubjectLeadershipDTO>> GetSubjectByTeacher(string teacher)
         {
             var result = await _context.Subjects
-                    //.Where(s => s.Teacher == teacher)
                     .OrderByDescending(d => d.Date)
                     .ToListAsync();
-            var SubjectLeadership = CreateListSubjectTeacherDTO(result);
+            var SubjectLeadership = CreateListSubjectLeadership(result);
             if (teacher.ToLower() == "tất cả giảng viên")
             {
                 return SubjectLeadership;
@@ -204,7 +203,7 @@ namespace LMS_Elibrary.Services
                     .OrderByDescending(d => d.Date)
                     .ToListAsync();
 
-            var SubjectLeadership = CreateListSubjectTeacherDTO(result);
+            var SubjectLeadership = CreateListSubjectLeadership(result);
 
             return SubjectLeadership;
         }
@@ -225,34 +224,7 @@ namespace LMS_Elibrary.Services
             return true;
         }
 
-        public async Task<List<SubjectTeacherDTO>> GetAllRoleTeacher()
-        {
-            var subjects = await _context.Subjects
-                                .Include(a => a.Topics)
-                                    .ThenInclude(a => a.Lecture)
-                                        .ThenInclude(a => a.Documents)
-                                .ToListAsync();
-
-            var SubjectTeacher = subjects.Select(sub => new SubjectTeacherDTO
-            {
-                SubjectID = sub.SubjectId,
-                SubjectName = sub.SubjectName,
-                Descriptions = sub.Descriptions,
-                // tính toán để có được số doc đã phê duyệt / tổng doc
-                ApproveDoc = $"{sub.Topics.Sum(t => t.Lecture.Sum(l => l.Documents.Count(d => d.Approved == true)))}/" +
-                             $"{sub.Topics.Sum(t => t.Lecture.Sum(l => l.Documents.Count()))}",
-                // tính toán để kiểm tra  số doc đã phê duyệt = tổng doc
-                // 
-                Status = sub.Topics.Sum(t => t.Lecture.Sum(l => l.Documents.Count(d => d.Approved == true))) == sub.Topics.Sum(t => t.Lecture.Sum(l => l.Documents.Count()))
-                        ? "Đã phê duyệt"
-                        : "Chờ phê duyệt"
-            }).ToList();
-
-            return SubjectTeacher;
-        }
-
-
-        private List<SubjectLeadershipDTO> CreateListSubjectTeacherDTO(List<Subject> subjects)
+        private List<SubjectLeadershipDTO> CreateListSubjectLeadership(List<Subject> subjects)
         {
             var SubjectLeadership = subjects.Select(sub => new SubjectLeadershipDTO
             {
@@ -282,7 +254,7 @@ namespace LMS_Elibrary.Services
             var result = await _context.Subjects
                         .OrderByDescending(d => d.Date)
                         .ToListAsync();
-            var SubjectLeadership = CreateListSubjectTeacherDTO(result);
+            var SubjectLeadership = CreateListSubjectLeadership(result);
             if (type.ToLower() == "tất cả tình trạng")
             {
                 return SubjectLeadership;
@@ -301,6 +273,85 @@ namespace LMS_Elibrary.Services
             }
 
             return new List<SubjectLeadershipDTO>();
+        }
+
+        private List<SubjectTeacherDTO> CreateListSubjectTeacher(List<Subject>? subjects)
+        {
+            if(subjects == null || subjects.Count == 0)
+            {
+                return new List<SubjectTeacherDTO>();
+            }
+            var SubjectTeacher = subjects.Select(sub => new SubjectTeacherDTO
+            {
+                Id = sub.Id,
+                SubjectID = sub.SubjectId,
+                SubjectName = sub.SubjectName,
+                Descriptions = sub.Descriptions,
+                ApproveDoc = sub.ApprovalDocs,
+                Status = (sub.ApprovalDocs?.Split("/").Length == 2 && sub.ApprovalDocs.Split("/")[0] == sub.ApprovalDocs.Split("/")[1]) ? "Đã phê duyệt" : "Chờ phê duyệt",
+                classRooms = sub.Classes
+            }).ToList();
+            return SubjectTeacher;
+        }
+
+        public async Task<List<SubjectTeacherDTO>> GetAllRoleTeacher()
+        {
+            var subjects = await _context.Subjects
+                            .Include(a => a.Classes)
+                            .OrderBy(str => str.SubjectName)
+                            .ToListAsync();
+
+            var SubjectTeacher = CreateListSubjectTeacher(subjects);
+
+            return SubjectTeacher;
+        }
+
+        public async Task<List<SubjectTeacherDTO>> SearchTeacher(string searchString)
+        {
+            var result = await _context.Subjects
+                            .Include(a => a.Classes)
+                            .Where(s => s.SubjectId.Contains(searchString) || s.SubjectName.Contains(searchString))
+                            .OrderBy(str => str.SubjectName)
+                            .ToListAsync();
+
+            var SubjectTeacher = CreateListSubjectTeacher(result);
+
+            return SubjectTeacher;
+        }
+
+        public Task<List<string>> GetFilterTeacherString()
+        {
+            List<string> result = new List<string>
+            {
+                "Tên môn học",
+                "Lần truy cập gần nhất",
+            };
+            return Task.FromResult(result);
+        }
+        public async Task<List<SubjectTeacherDTO>> GetSubjectByNameRoleTeacher(string type)
+        {
+
+            var result = await _context.Subjects
+                                    .Include(a => a.Classes)
+                                    .OrderBy(str => str.SubjectName)
+                                    .ToListAsync();
+
+            var SubjectTeacher = CreateListSubjectTeacher(result);
+            if(type.ToLower() == "tên môn học")
+            {
+                return SubjectTeacher;
+            }
+            if (type.ToLower() == "lần truy cập gần nhất")
+            {
+                var result1 = await _context.Subjects
+                                //.OrderByDescending(obj => obj.LastTeacherAccessedDate.HasValue) //null sẽ được đặt cuối cùng
+                                //.ThenByDescending(obj => obj.LastTeacherAccessedDate) // LastTeacherAccessedDate giảm dần
+                                .ToListAsync();
+                var _SubjectTeacher = CreateListSubjectTeacher(result1);
+                return _SubjectTeacher;
+            }
+
+            return CreateListSubjectTeacher(null);
         }
     }
 }
