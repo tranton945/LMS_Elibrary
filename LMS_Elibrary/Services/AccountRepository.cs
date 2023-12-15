@@ -1,6 +1,7 @@
 ﻿using LMS_Elibrary.Data;
 using LMS_Elibrary.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Drawing;
+using System.Linq;
 
 namespace LMS_Elibrary.Services
 {
@@ -19,8 +22,10 @@ namespace LMS_Elibrary.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ElibraryDbContext _context;
         private readonly BlacklistService _blacklistService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly GetUser _getUser;
 
-        public AccountRepository(BlacklistService blacklistService, ElibraryDbContext context, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+        public AccountRepository(GetUser getUser, IWebHostEnvironment webHostEnvironment, BlacklistService blacklistService, ElibraryDbContext context, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -28,6 +33,8 @@ namespace LMS_Elibrary.Services
             _httpContextAccessor = httpContextAccessor;
             _context = context;
             _blacklistService = blacklistService;
+            _webHostEnvironment = webHostEnvironment;
+            _getUser = getUser;
         }
         public async Task<bool> DeleteAccount(string email)
         {
@@ -144,7 +151,7 @@ namespace LMS_Elibrary.Services
             return await _userManager.CreateAsync(user, model.Password);
         }
 
-        public async Task<bool> UpdateAccount(string email, string newName, DateTime newDateOfBirt, string newGender)
+        public async Task<bool> UpdateAccount(string email, string newName, DateTime newDateOfBirt, string newGender, string newPhoneNumber, string newTeacherID, string newAddress)
         {
             var accounts = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
             if (accounts == null)
@@ -154,11 +161,17 @@ namespace LMS_Elibrary.Services
             var oldName = accounts.Name;
             var oldDateOfBirt = accounts.DateOfBirt;
             var oldGender = accounts.Gender;
+            var oldPhoneNumber = accounts.PhoneNumber;
+            var oldTeacherID = accounts.TeacherID;
+            var oldAddress = accounts.Address;
 
 
             accounts.Name = newName ?? accounts.Name;
             accounts.DateOfBirt = newDateOfBirt;
             accounts.Gender = newGender ?? accounts.Gender;
+            accounts.PhoneNumber = newPhoneNumber ?? accounts.PhoneNumber;
+            accounts.TeacherID = newTeacherID ?? accounts.TeacherID;
+            accounts.Address = newAddress ?? accounts.Address;
 
             var result = await _userManager.UpdateAsync(accounts);
 
@@ -250,6 +263,82 @@ namespace LMS_Elibrary.Services
 
             return result;
 
+        }
+        private static bool IsImageFile(IFormFile file)
+        {
+            try
+            {
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+
+                var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+                return allowedExtensions.Contains(extension);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        public async Task<ResultUpdateAvatar> UpdateAvatar(IFormFile avatarFile)
+        {
+            var isusser = await _getUser.user();
+            var accounts = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == isusser.UserName);
+
+            if (accounts == null)
+            {
+                return new ResultUpdateAvatar
+                {
+                    text = "Account not found"
+                };
+            }
+
+            if (avatarFile != null && avatarFile.Length > 0)
+            {
+                // Kiểm tra loại tệp tin
+                if (!IsImageFile(avatarFile))
+                {
+                    return new ResultUpdateAvatar
+                    {
+                        text = "Invalite Image"
+                    };
+                }
+
+                // Xử lý tải lên và lưu trữ ảnh mới
+                //_webHostEnvironment.ContentRootPath: Trả về đường dẫn đến thư mục gốc của dự án
+                var uploadPath = Path.Combine(_webHostEnvironment.ContentRootPath, "StaticFiles/images/avatars");
+                var uniqueFileName = Guid.NewGuid().ToString() + "_" + avatarFile.FileName;
+                var newFilePath = Path.Combine(uploadPath, uniqueFileName);
+                // tạo file tại đường dẫn newFilePath
+                using (var stream = new FileStream(newFilePath, FileMode.Create))
+                {
+                    await avatarFile.CopyToAsync(stream);
+                }
+                var oldAvatarFileName = accounts.Avatar;
+                // Cập nhật đường dẫn mới trong cơ sở dữ liệu
+                accounts.Avatar = "/StaticFiles/images/avatars/" + uniqueFileName;
+                await _userManager.UpdateAsync(accounts);
+
+                if (!string.IsNullOrEmpty(oldAvatarFileName) && !oldAvatarFileName.EndsWith("default_avatar.jpg"))
+                {
+                    var oldFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, oldAvatarFileName.TrimStart('/'));
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        System.IO.File.Delete(oldFilePath);
+                    }
+                }
+
+                return new ResultUpdateAvatar
+                {
+                    text = "Update Avatar Success",
+                };
+            }
+            else
+            {
+                return new ResultUpdateAvatar
+                {
+                    text = "",
+                };
+            }
         }
     }
 }

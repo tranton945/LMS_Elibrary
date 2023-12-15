@@ -89,9 +89,9 @@ namespace LMS_Elibrary.Controllers
             }
         }
         [HttpPut("UpdateAccount")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [Authorize]
-        public async Task<IActionResult> UpdateAccount(string email, string newName, DateTime newDateOfBirt, string newGender)
+        public async Task<IActionResult> UpdateAccount(string email, string newName, DateTime newDateOfBirt, string newGender, string newPhoneNumber, string newTeacherID, string newAddress)
         {
             try
             {
@@ -99,7 +99,26 @@ namespace LMS_Elibrary.Controllers
                 {
                     return BadRequest("access token invalid");
                 }
-                var result = await _account.UpdateAccount(email, newName, newDateOfBirt, newGender);
+                var result = await _account.UpdateAccount(email, newName, newDateOfBirt, newGender, newPhoneNumber, newTeacherID, newAddress);
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpPut("UpdateAvatar")]
+        [Authorize(Roles = "Admin")]
+        [Authorize]
+        public async Task<IActionResult> UpdateAvatar(IFormFile fileAvatar)
+        {
+            try
+            {
+                if (await _blacklistService.CheckJWT() == true)
+                {
+                    return BadRequest("access token invalid");
+                }
+                var result = await _account.UpdateAvatar(fileAvatar);
                 return Ok(result);
             }
             catch

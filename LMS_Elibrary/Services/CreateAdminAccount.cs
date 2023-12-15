@@ -24,16 +24,16 @@ namespace LMS_Elibrary.Services
 
         private async Task CreateAdminUserAsync()
         {
-            var adminUser = await _userManager.FindByEmailAsync("admin123@admin.com");
+            var adminUser = await _userManager.FindByEmailAsync("admin@admin.com");
             if (adminUser == null)
             {
                 var admin = new ApplicationUser
                 {
-                    Name = "admin123",
-                    Email = "admin123@admin.com",
+                    Name = "admin",
+                    Email = "admin@admin.com",
                     DateOfBirt = DateTime.Now,
                     Gender = "male",
-                    UserName = "admin123@admin.com",
+                    UserName = "admin@admin.com",
                 };
 
                 var createAdminAccount = await _userManager.CreateAsync(admin, "Admin123@admin.com");

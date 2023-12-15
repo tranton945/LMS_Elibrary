@@ -14,8 +14,9 @@ namespace LMS_Elibrary.Services
 
         public Task<List<ApplicationUser>> GetAllAccounts();
         public Task<ApplicationUser> GetAccountsByEmail(string email);
-        public Task<bool> UpdateAccount(string email, string newName, DateTime newDateOfBirt, string newGender);
+        public Task<bool> UpdateAccount(string email, string newName, DateTime newDateOfBirt, string newGender, string newPhoneNumber, string newTeacherID, string newAddress);
         public Task<bool> UpdatePassword(ChangePasswordModel model);
+        public Task<ResultUpdateAvatar> UpdateAvatar(IFormFile avatarFile);
         public Task<bool> DeleteAccount(string email);
 
         public Task<AccountWithRolesDto> GetAccountRole(string email);

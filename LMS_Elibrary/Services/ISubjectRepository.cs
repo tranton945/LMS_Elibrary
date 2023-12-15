@@ -22,9 +22,5 @@ namespace LMS_Elibrary.Services
 
         public Task UpdateApproveDoc(int Id);
 
-        public Task<List<SubjectTeacherDTO>> GetAllRoleTeacher();
-        public Task<List<SubjectTeacherDTO>> SearchTeacher(string searchString);
-        public Task<List<string>> GetFilterTeacherString();
-        public Task<List<SubjectTeacherDTO>> GetSubjectByNameRoleTeacher(string type);
     }
 }

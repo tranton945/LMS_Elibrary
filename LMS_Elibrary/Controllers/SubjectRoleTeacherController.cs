@@ -11,14 +11,12 @@ namespace LMS_Elibrary.Controllers
     public class SubjectRoleTeacherController : ControllerBase
     {
         private readonly BlacklistService _blacklistService;
-        private readonly ISubjectRepository _subject;
-        private readonly IAccountRepository _account;
+        private readonly ISubjectRoleTeacherRepository _subject;
 
-        public SubjectRoleTeacherController(BlacklistService blacklistService, ISubjectRepository subject, IAccountRepository account)
+        public SubjectRoleTeacherController(BlacklistService blacklistService, ISubjectRoleTeacherRepository subject)
         {
             _blacklistService = blacklistService;
             _subject = subject;
-            _account = account;
         }
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
@@ -81,6 +79,40 @@ namespace LMS_Elibrary.Controllers
                     return BadRequest("access token invalid");
                 }
                 var result = await _subject.GetSubjectByNameRoleTeacher(type);
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet("SubjectOverview")]
+        public async Task<IActionResult> SubjectOverview(int subId)
+        {
+            try
+            {
+                if (await _blacklistService.CheckJWT() == true)
+                {
+                    return BadRequest("access token invalid");
+                }
+                var result = await _subject.SubjectOverview(subId);
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet("ListTopic")]
+        public async Task<IActionResult> ListTopic(int subId)
+        {
+            try
+            {
+                if (await _blacklistService.CheckJWT() == true)
+                {
+                    return BadRequest("access token invalid");
+                }
+                var result = await _subject.ListTopic(subId);
                 return Ok(result);
             }
             catch

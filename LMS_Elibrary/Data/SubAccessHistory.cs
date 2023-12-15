@@ -8,7 +8,7 @@ namespace LMS_Elibrary.Data
     {
         [Key]
         public int Id { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public DateTime AccessDate { get; set; }
 
         public int SubjectId { get; set; }

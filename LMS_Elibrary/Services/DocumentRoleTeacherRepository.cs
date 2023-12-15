@@ -219,7 +219,16 @@ namespace LMS_Elibrary.Services
                                                 .ThenInclude(a => a.Subject)
                                          .Where(a => a.Lecture.Topic.Subject.Id == subId)
                                          .ToListAsync();
+            var issuer = await _user.user();
             var DocumentTeacher = CreateListDocumentTeacher(result);
+            var newSubAccessHistory = new SubAccessHistory
+            {
+                UserId =  issuer.Id,
+                AccessDate = DateTime.Now,
+                SubjectId = subId,
+            };
+            _context.SubAccessHistories.Add(newSubAccessHistory);
+            await _context.SaveChangesAsync();
             return DocumentTeacher;
         }
         private List<DocumentRoleTeacherDTO> CreateListDocumentTeacher(List<Document> documents)
