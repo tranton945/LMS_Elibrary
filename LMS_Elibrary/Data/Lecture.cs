@@ -20,6 +20,7 @@ namespace LMS_Elibrary.Data
         public Topic? Topic { get; set; }
 
         public ICollection<Document>? Documents { get; set; }
+        public ICollection<Questions>? Questions { get; set; }
 
     }
 }

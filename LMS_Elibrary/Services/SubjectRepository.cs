@@ -15,6 +15,11 @@ namespace LMS_Elibrary.Services
         }
         public async Task<Subject> Add(Subject subject)
         {
+            var isDuplicate = await _context.Subjects.AnyAsync(a => a.SubjectName == subject.SubjectName);
+            if (isDuplicate)
+            {
+                return null;
+            }
             var _subject = new Subject
             {
                 SubjectId = subject.SubjectId,

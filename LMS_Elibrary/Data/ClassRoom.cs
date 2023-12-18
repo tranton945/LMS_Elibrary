@@ -17,5 +17,7 @@ namespace LMS_Elibrary.Data
         [JsonIgnore]
         [ForeignKey(nameof(SubjectId))]
         public Subject? Subject { get; set; }
+
+        public ICollection<Questions>? Questions { get; set; }
     }
 }

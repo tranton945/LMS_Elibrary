@@ -1,5 +1,6 @@
 ﻿using LMS_Elibrary.Data;
 using Microsoft.EntityFrameworkCore;
+using ServiceStack;
 
 namespace LMS_Elibrary.Services
 {
@@ -13,6 +14,11 @@ namespace LMS_Elibrary.Services
         }
         public async Task<Topic> Add(Topic topic)
         {
+            var isDuplicate = await _context.Topics.AnyAsync(a => a.TopicName == topic.TopicName);
+            if (isDuplicate)
+            {
+                return null;
+            }
             var _topic = new Topic
             {
                 TopicName = topic.TopicName,

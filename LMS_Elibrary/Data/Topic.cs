@@ -17,5 +17,6 @@ namespace LMS_Elibrary.Data
         public Subject? Subject { get; set; }
 
         public ICollection<Lecture>? Lecture { get; set; }
+        public ICollection<Questions>? Questions { get; set; }
     }
 }

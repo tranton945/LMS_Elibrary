@@ -13,6 +13,11 @@ namespace LMS_Elibrary.Services
         }
         public async Task<Lecture> Add(Lecture lecture)
         {
+            var isTitleDuplicate = await _context.Lectures.AnyAsync(a => a.Title == lecture.Title);
+            if(isTitleDuplicate)
+            {
+                return null;
+            }
             var _lecture = new Lecture
             {
                 Title= lecture.Title,
