@@ -19,5 +19,6 @@ namespace LMS_Elibrary.Data
         public Subject? Subject { get; set; }
 
         public ICollection<Questions>? Questions { get; set; }
+        public ICollection<ClassRoomNotificationLink>? ClassRoomNotificationLinks { get; set; }
     }
 }

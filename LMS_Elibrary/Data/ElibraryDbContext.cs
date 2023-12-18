@@ -20,5 +20,8 @@ namespace LMS_Elibrary.Data
         public DbSet<Questions> Questions { get; set; }
         public DbSet<Answers> Answers { get; set; }
         public DbSet<LikeQuestions> LikeQuestions { get; set; }
+        public DbSet<ClassRoomNotification> ClassRoomNotifications { get; set; }
+        public DbSet<ClassRoomNotificationLink> ClassRoomNotificationLinks { get; set; }
+        public DbSet<SelectedUser> SelectedUsers { get; set; }
     }
 }
