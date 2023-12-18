@@ -122,6 +122,23 @@ namespace LMS_Elibrary.Controllers
                 return BadRequest(ex);
             }
         }
+        [HttpGet("Search")]
+        public async Task<IActionResult> Search(string searchString)
+        {
+            try
+            {
+                if (await _blacklist.CheckJWT() == true)
+                {
+                    return BadRequest("access token invalid");
+                }
+                var result = await _question.Search(searchString);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
         [HttpGet("GetByClassRoom")]
         public async Task<IActionResult> GetByClassRoom(string classRoom)
         {
@@ -190,7 +207,7 @@ namespace LMS_Elibrary.Controllers
                 return BadRequest(ex);
             }
         }
-        [HttpGet("GetQuestionByType")]//
+        [HttpGet("GetQuestionByType")]
         public async Task<IActionResult> GetQuestionByType(string type)
         {
             try

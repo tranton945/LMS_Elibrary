@@ -33,7 +33,7 @@ namespace LMS_Elibrary.Services
             {
                 Id = an.Id,
                 Avatar = isusser.Avatar,
-                UserName= isusser.UserName,
+                UserName= isusser.Name,
                 Date = an.Date,
                 Content = an.Content
             };
@@ -61,7 +61,7 @@ namespace LMS_Elibrary.Services
                 {
                     Id = answer.Id,
                     Avatar = user != null ? user.Avatar : string.Empty,
-                    UserName = user != null ? user.UserName : string.Empty,
+                    UserName = user != null ? user.Name : string.Empty,
                     Date = answer.Date,
                     Content = answer.Content
                 };
@@ -89,7 +89,7 @@ namespace LMS_Elibrary.Services
             {
                 Id = result.Id,
                 Avatar = isusser.Avatar,
-                UserName = isusser.UserName,
+                UserName = isusser.Name,
                 Date = result.Date,
                 Content = result.Content
             };

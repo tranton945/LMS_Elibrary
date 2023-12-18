@@ -109,7 +109,7 @@ namespace LMS_Elibrary.Services
                                 Date = q.Date,
                                 NumberOfAnswer = (q.Answers != null ? q.Answers.Count() : 0),
                                 NumberOfLike = q.LikeQuestions.Count(),
-                                userName = isusser.UserName,
+                                userName = isusser.Name,
                                 userAvatar = isusser.Avatar,
                                 Answers = (q.HiddenAnswer == false) ? q.Answers : null
                             })
@@ -141,7 +141,7 @@ namespace LMS_Elibrary.Services
                     Date = q.Date,
                     NumberOfAnswer = (q.Answers != null ? q.Answers.Count() : 0),
                     NumberOfLike = q.LikeQuestions.Count(),
-                    userName = user != null ? user.UserName : string.Empty,
+                    userName = user != null ? user.Name : string.Empty,
                     userAvatar = user != null ? user.Avatar : string.Empty,
                     Answers = (q.HiddenAnswer == false) ? q.Answers : null
                 };
@@ -365,8 +365,8 @@ namespace LMS_Elibrary.Services
                                     .Include(a => a.LikeQuestions)
                                     .ToListAsync();
             var questionDTOs = await CreateListQuestionDTO(result);
-            var _questionDTOs = questionDTOs.Where(a => a.Title.Contains(searchString) || a.Content.Contains(searchString) || a.userName.Contains(searchString));
-            return questionDTOs;
+            var _questionDTOs = questionDTOs.Where(a => a.Title.Contains(searchString) || a.Content.Contains(searchString) || a.userName.Contains(searchString)).ToList();
+            return _questionDTOs;
         }
     }
 }
