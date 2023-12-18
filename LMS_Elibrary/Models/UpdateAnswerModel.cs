@@ -3,6 +3,6 @@
     public class UpdateAnswerModel
     {
         public int Id { get; set; }
-        public string Contain { get; set; }
+        public string Content { get; set; }
     }
 }

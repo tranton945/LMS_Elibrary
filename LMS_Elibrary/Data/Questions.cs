@@ -11,7 +11,7 @@ namespace LMS_Elibrary.Data
         [Required]
         public string Title { get; set; }
         [Required]
-        public string Contain { get; set; }
+        public string Content { get; set; }
         [Required]
         public bool Like { get; set; }
         [Required]

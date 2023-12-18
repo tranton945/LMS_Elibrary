@@ -16,6 +16,7 @@ namespace LMS_Elibrary.Services
         public Task<List<QuestionDTO>> GetQuestionByType(string type);
         public Task<List<string>> GetQuestionFilter();
         public Task<List<QuestionDTO>> GetQuestionByFilter(string filter);
+        public Task<List<QuestionDTO>> Search(string searchString);
         public Task<List<string>> GetAllLecture();
         public Task<List<QuestionDTO>> GetByDate();
         public Task<List<QuestionDTO>> GetByAnswered(bool answered);

@@ -1,6 +1,7 @@
 ﻿using LMS_Elibrary.Data;
 using LMS_Elibrary.Migrations;
 using LMS_Elibrary.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
@@ -10,11 +11,13 @@ namespace LMS_Elibrary.Services
     {
         private readonly ElibraryDbContext _context;
         private readonly GetUser _getUser;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public QuestionRepository(ElibraryDbContext context, GetUser getUser) 
+        public QuestionRepository(ElibraryDbContext context, GetUser getUser, UserManager<ApplicationUser> userManager) 
         {
             _context = context;
             _getUser = getUser;
+            _userManager = userManager;
         } 
         public async Task<Questions> Add(CreateQuestionModel q)
         {
@@ -32,7 +35,7 @@ namespace LMS_Elibrary.Services
             var question = new Questions
             {
                 Title= q.Title,
-                Contain = q.Contain,
+                Content = q.Content,
                 Like = false,
                 Date = DateTime.Now,
                 HiddenAnswer = false,
@@ -62,14 +65,13 @@ namespace LMS_Elibrary.Services
 
         public async Task<List<QuestionDTO>> GetAll()
         {
-            var isusser = await _getUser.user();
             var result = await _context.Questions
                                     .Include(a => a.Answers)
                                     .Include(a => a.LikeQuestions)
                                     .ToListAsync();
-            var SubjectTeacher = CreateListQuestionDTO(result, isusser);
+            var questionDTOs = await CreateListQuestionDTO(result);
 
-            return SubjectTeacher;
+            return questionDTOs;
         }
 
         public async Task<List<string>> GetAllTopic()
@@ -103,7 +105,7 @@ namespace LMS_Elibrary.Services
                             {
                                 QuestionId = q.Id,
                                 Title = q.Title,
-                                Contain = q.Contain,
+                                Content = q.Content,
                                 Date = q.Date,
                                 NumberOfAnswer = (q.Answers != null ? q.Answers.Count() : 0),
                                 NumberOfLike = q.LikeQuestions.Count(),
@@ -120,25 +122,34 @@ namespace LMS_Elibrary.Services
             return result;
         }
 
-        private List<QuestionDTO> CreateListQuestionDTO(List<Questions>? ques, ApplicationUser user)
+        private async Task<List<QuestionDTO>> CreateListQuestionDTO(List<Questions>? ques)
         {
             if (ques == null || ques.Count == 0)
             {
                 return new List<QuestionDTO>();
             }
-            var question = ques.Select(q => new QuestionDTO
+            List<QuestionDTO> questionList = new List<QuestionDTO>();
+
+            foreach (var q in ques)
             {
-                QuestionId = q.Id,
-                Title = q.Title,
-                Contain = q.Contain,
-                Date = q.Date,
-                NumberOfAnswer = (q.Answers != null ? q.Answers.Count() : 0),
-                NumberOfLike = q.LikeQuestions.Count(),
-                userName = user.UserName,
-                userAvatar = user.Avatar,
-                Answers = (q.HiddenAnswer == false) ? q.Answers : null
-            }).ToList();
-            return question;
+                var user = await _userManager.FindByIdAsync(q.UserId);
+                var questionDto = new QuestionDTO
+                {
+                    QuestionId = q.Id,
+                    Title = q.Title,
+                    Content = q.Content,
+                    Date = q.Date,
+                    NumberOfAnswer = (q.Answers != null ? q.Answers.Count() : 0),
+                    NumberOfLike = q.LikeQuestions.Count(),
+                    userName = user != null ? user.UserName : string.Empty,
+                    userAvatar = user != null ? user.Avatar : string.Empty,
+                    Answers = (q.HiddenAnswer == false) ? q.Answers : null
+                };
+
+                questionList.Add(questionDto);
+            }
+
+            return questionList;
         }
 
         public Task<bool> Update(Questions q, int id)
@@ -168,7 +179,7 @@ namespace LMS_Elibrary.Services
                                     .Include(a => a.LikeQuestions)
                                     .Where(a => a.ClassRoomId == classroom.Id)
                                     .ToListAsync();
-            var _question = CreateListQuestionDTO(result, isusser);
+            var _question = await CreateListQuestionDTO(result);
 
             return _question;
         }
@@ -197,7 +208,7 @@ namespace LMS_Elibrary.Services
                                     .Include(a => a.LikeQuestions)
                                     .Where(a => _lecture.Contains(a.LectureId.Value))
                                     .ToListAsync();
-            var _question = CreateListQuestionDTO(result, isusser);
+            var _question = await CreateListQuestionDTO(result);
 
             return _question;
         }
@@ -210,7 +221,7 @@ namespace LMS_Elibrary.Services
                                     .Include(a => a.LikeQuestions)
                                     .OrderByDescending(a => a.Date)
                                     .ToListAsync();
-            var _question = CreateListQuestionDTO(result, isusser);
+            var _question = await CreateListQuestionDTO(result);
 
             return _question;
         }
@@ -223,7 +234,7 @@ namespace LMS_Elibrary.Services
                                     .Include(a => a.LikeQuestions)
                                     .Where(a => a.Answered == answered)
                                     .ToListAsync();
-            var _question = CreateListQuestionDTO(result, isusser);
+            var _question = await CreateListQuestionDTO(result);
 
             return _question;
         }
@@ -236,7 +247,7 @@ namespace LMS_Elibrary.Services
                                     .Include(a => a.LikeQuestions)
                                     .Where(a => a.UserId == isusser.Id)
                                     .ToListAsync();
-            var _question = CreateListQuestionDTO(result, isusser);
+            var _question = await CreateListQuestionDTO(result);
 
             return _question;
         }
@@ -272,7 +283,7 @@ namespace LMS_Elibrary.Services
                         .Include(a => a.LikeQuestions)
                         .Where(a => _likeQuestions.Contains(a.Id))
                         .ToListAsync();
-            var _question = CreateListQuestionDTO(result, isusser);
+            var _question = await CreateListQuestionDTO(result);
 
             return _question;
         }
@@ -344,6 +355,18 @@ namespace LMS_Elibrary.Services
                 return result;
             }
             return await GetAll();
+        }
+
+        public async Task<List<QuestionDTO>> Search(string searchString)
+        {
+            var isusser = await _getUser.user();
+            var result = await _context.Questions
+                                    .Include(a => a.Answers)
+                                    .Include(a => a.LikeQuestions)
+                                    .ToListAsync();
+            var questionDTOs = await CreateListQuestionDTO(result);
+            var _questionDTOs = questionDTOs.Where(a => a.Title.Contains(searchString) || a.Content.Contains(searchString) || a.userName.Contains(searchString));
+            return questionDTOs;
         }
     }
 }
