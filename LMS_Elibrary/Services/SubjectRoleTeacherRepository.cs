@@ -137,6 +137,23 @@ namespace LMS_Elibrary.Services
             };
             return subject;
         }
+        public async Task<Subject> SubjectOverviewPriview(int subId)
+        {
+            var result = await _context.Subjects.SingleOrDefaultAsync(a => a.Id == subId);
+            if (result == null)
+            {
+                return new Subject();
+            }
+            var subject = new Subject
+            {
+                Id = result.Id,
+                SubjectId = result.SubjectId,
+                SubjectName = result.SubjectName,
+                Teacher = result.Teacher,
+                Descriptions = result.Descriptions
+            };
+            return subject;
+        }
 
         public async Task<List<Topic>> ListTopic(int subId)
         {
@@ -149,14 +166,46 @@ namespace LMS_Elibrary.Services
             return result;
         }
 
-        public Task<List<SubjectTeacherDTO>> QuestAndAnswer(string type)
+        public async Task<object> SubjectOverviewSearch(int subId, string searchString)
         {
-            throw new NotImplementedException();
+            // Step 1: Select những lecture theo searchString
+            var matchingLectures = await _context.Lectures
+                .Where(lecture => lecture.Title.Contains(searchString) ||
+                                  (lecture.Descriptions != null && lecture.Descriptions.Contains(searchString)))
+                .ToListAsync();
+            // Step 2: Kiểm tra nếu có lecture data thì truy ngược lại nó thuộc topic nào
+            if (matchingLectures.Any())
+            {
+                var topicsWithMatchingLectures = await _context.Topics
+                    .Include(a => a.Lecture)
+                    .ThenInclude(a => a.Documents)
+                    .ThenInclude(f => f.File)
+                    .Where(topic => topic.Lecture.Any(lecture => matchingLectures.Contains(lecture) && topic.SubjectId == subId))
+                    .ToListAsync();
+
+                // Step 3: Tạo ra một dạng đối tượng Topic mới gồm topic và những lecture đã tìm được
+                var result = topicsWithMatchingLectures.Select(topic => new
+                {
+                    Topic = topic,
+                    //Lectures = matchingLectures.Where(lecture => topic.Lecture.Contains(lecture)).ToList()
+                });
+
+                return result;
+            }
+            // Step 4: Nếu lecture không có data thì tiến hành kiểm tra topic
+            var matchingTopics = await _context.Topics
+                .Include(a => a.Lecture)
+                .ThenInclude(a => a.Documents)
+                .ThenInclude(f => f.File)
+                .Where(topic => topic.TopicName.Contains(searchString) && topic.SubjectId == subId)
+                .ToListAsync();
+            // Step 5: Nếu có topic phù hợp thì trả kết quả toàn bộ thông tin của topic đó
+            if (matchingTopics.Any())
+            {
+                return matchingTopics;
+            }
+            return null;
         }
 
-        public Task<List<SubjectTeacherDTO>> SubjectNotifiaction(string type)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

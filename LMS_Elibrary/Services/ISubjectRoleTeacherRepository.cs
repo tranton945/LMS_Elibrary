@@ -11,7 +11,7 @@ namespace LMS_Elibrary.Services
         public Task<List<SubjectTeacherDTO>> GetSubjectByNameRoleTeacher(string type);
         public Task<Subject> SubjectOverview(int subId);
         public Task<List<Topic>> ListTopic(int subId);
-        public Task<List<SubjectTeacherDTO>> QuestAndAnswer(string type);
-        public Task<List<SubjectTeacherDTO>> SubjectNotifiaction(string type);
+        public Task<Subject> SubjectOverviewPriview(int subId);
+        public Task<object> SubjectOverviewSearch(int subId, string searchString);
     }
 }

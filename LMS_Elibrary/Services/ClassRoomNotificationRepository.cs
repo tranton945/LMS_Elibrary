@@ -225,5 +225,21 @@ namespace LMS_Elibrary.Services
             var DTOs = await CreateClassRoomNotificationDTO(result);
             return DTOs;
         }
+
+        public async Task<List<ClassRoomNotificationDTO>> GetBySubjectId(int subjectId)
+        {
+            var classroom = await _context.ClassRooms
+                                        .Include(a => a.ClassRoomNotificationLinks)
+                                        .ThenInclude(a => a.ClassRoomNotifications)
+                                        .Where(a => a.SubjectId == subjectId)
+                                        .ToListAsync();
+            if(classroom == null || classroom.Count() == 0)
+            {
+                return null;
+            }
+            var notification = classroom.SelectMany(a => a.ClassRoomNotificationLinks.Select(x => x.ClassRoomNotifications)).Distinct().ToList();
+            var DTOs = await CreateClassRoomNotificationDTO(notification);
+            return DTOs;
+        }
     }
 }

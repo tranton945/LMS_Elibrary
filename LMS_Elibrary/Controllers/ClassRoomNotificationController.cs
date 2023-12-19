@@ -126,6 +126,23 @@ namespace LMS_Elibrary.Controllers
                 return BadRequest(ex);
             }
         }
+        [HttpGet("GetBySubjectId")]
+        public async Task<IActionResult> GetBySubjectId(int subjectId)
+        {
+            try
+            {
+                if (await _blacklist.CheckJWT() == true)
+                {
+                    return BadRequest("access token invalid");
+                }
+                var result = await _classRoomNotification.GetBySubjectId(subjectId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
         [HttpGet("GetByClassRoom")]
         public async Task<IActionResult> GetByClassRoom(string classRoomName)
         {

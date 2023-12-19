@@ -141,7 +141,7 @@ namespace LMS_Elibrary.Services
         {
             var result = await _context.Documents
                                     .Include(s => s.File)
-                                    .Where(a => a.File.PrivateFile != null)
+                                    .Where(a => a.File.PrivateFile == null)
                                     .ToListAsync();
             return result;
         }

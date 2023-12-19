@@ -11,6 +11,7 @@ namespace LMS_Elibrary.Services
         public Task<List<ClassRoomNotificationDTO>> Search(string searchString);
         public Task<List<string>> GetClassRoomInScreenNotification(int subjectId);
         public Task<List<ClassRoomNotificationDTO>> GetByClassRoom(string classRoomName);
+        public Task<List<ClassRoomNotificationDTO>> GetBySubjectId(int subjectId);
         public Task<string> SearchUser(string name);
         public Task<ClassRoomNotificationDTO> Add(CreateClassRoomNotificationModel Notification);
         public Task<bool> Update(ClassRoomNotification Notification, int id);
