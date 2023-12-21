@@ -1,4 +1,5 @@
 ﻿using LMS_Elibrary.Data;
+using LMS_Elibrary.Models;
 using LMS_Elibrary.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -21,7 +22,7 @@ namespace LMS_Elibrary.Controllers
         }
 
         [HttpPost("Add")]
-        public async Task<IActionResult> Add(Topic topic)
+        public async Task<IActionResult> Add(CreateTopicModel topic)
         {
             try
             {

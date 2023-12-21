@@ -12,6 +12,7 @@ namespace LMS_Elibrary.Data
         public string Title { get; set; }
 
         public string? Descriptions { get; set; }
+        public bool? BlockStudents { get; set; }
 
 
         public int? TopicId { get; set; }

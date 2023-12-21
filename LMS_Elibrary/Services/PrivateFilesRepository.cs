@@ -99,7 +99,7 @@ namespace LMS_Elibrary.Services
         {
             var result = await _context.PrivateFiles
                                         .Include(a => a.File)
-                                        .Where(f => f.File.FileName != null || f.File != null)
+                                        .Where(f => (f.File.FileName != null || f.File != null) && f.File.PrivateFile != null)
                                         .Select(a => new PrivateFileDTO
                                         {
                                             PrivateFileId = a.Id,

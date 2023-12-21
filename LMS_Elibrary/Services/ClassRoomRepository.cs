@@ -53,6 +53,14 @@ namespace LMS_Elibrary.Services
             return result;
         }
 
+        public async Task<List<string>> GetClassRoomBySubjectId(int subjectID)
+        {
+            var result = await _context.ClassRooms.Where(a => a.SubjectId == subjectID).ToListAsync();
+            var className = result.Select(a => a.ClassRoomName).ToList();
+            className.Insert(0, "Tùy chon lớp học");
+            return className;
+        }
+
         public async Task<bool> Update(ClassRoom classRoom, int SubjectId, int id)
         {
             var result = await _context.ClassRooms.SingleOrDefaultAsync(a => a.Id == id);

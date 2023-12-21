@@ -23,5 +23,7 @@ namespace LMS_Elibrary.Data
         public DbSet<ClassRoomNotification> ClassRoomNotifications { get; set; }
         public DbSet<ClassRoomNotificationLink> ClassRoomNotificationLinks { get; set; }
         public DbSet<SelectedUser> SelectedUsers { get; set; }
+        public DbSet<SubjectOtherInformation> SubjectOtherInformations { get; set; }
+        public DbSet<ClassRoomLectures> ClassRoomLectures { get; set; }
     }
 }

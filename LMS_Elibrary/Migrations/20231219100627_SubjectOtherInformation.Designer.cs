@@ -4,6 +4,7 @@ using LMS_Elibrary.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS_Elibrary.Migrations
 {
     [DbContext(typeof(ElibraryDbContext))]
-    partial class ElibraryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231219100627_SubjectOtherInformation")]
+    partial class SubjectOtherInformation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -323,9 +325,6 @@ namespace LMS_Elibrary.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<bool?>("BlockStudents")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Descriptions")
                         .HasColumnType("nvarchar(max)");
 
@@ -541,7 +540,7 @@ namespace LMS_Elibrary.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("SubjectOtherInformations");
+                    b.ToTable("SubjectOtherInformation");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.Topic", b =>

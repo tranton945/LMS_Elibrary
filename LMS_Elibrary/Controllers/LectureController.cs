@@ -1,4 +1,5 @@
 ﻿using LMS_Elibrary.Data;
+using LMS_Elibrary.Models;
 using LMS_Elibrary.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -20,7 +21,7 @@ namespace LMS_Elibrary.Controllers
             _lecture = lecture;
         }
         [HttpPost("Add")]
-        public async Task<IActionResult> Add(Lecture lecture)
+        public async Task<IActionResult> Add(CreateLectureModel lecture)
         {
             try
             {
@@ -71,7 +72,7 @@ namespace LMS_Elibrary.Controllers
             }
         }
         [HttpPut("Update")]
-        public async Task<IActionResult> Update(int id, Lecture lecture)
+        public async Task<IActionResult> Update(int id, CreateLectureModel lecture)
         {
             try
             {

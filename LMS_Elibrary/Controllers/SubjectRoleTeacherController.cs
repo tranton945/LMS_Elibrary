@@ -12,11 +12,13 @@ namespace LMS_Elibrary.Controllers
     {
         private readonly BlacklistService _blacklistService;
         private readonly ISubjectRoleTeacherRepository _subject;
+        private readonly IClassRoomRepository _classRoom;
 
-        public SubjectRoleTeacherController(BlacklistService blacklistService, ISubjectRoleTeacherRepository subject)
+        public SubjectRoleTeacherController(IClassRoomRepository classRoom,BlacklistService blacklistService, ISubjectRoleTeacherRepository subject)
         {
             _blacklistService = blacklistService;
             _subject = subject;
+            _classRoom = classRoom;
         }
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
@@ -103,7 +105,7 @@ namespace LMS_Elibrary.Controllers
                 return BadRequest();
             }
         }
-        [HttpGet("ListTopic")]
+        [HttpGet("ListTopicOverView")]
         public async Task<IActionResult> ListTopic(int subId)
         {
             try
@@ -113,6 +115,74 @@ namespace LMS_Elibrary.Controllers
                     return BadRequest("access token invalid");
                 }
                 var result = await _subject.ListTopic(subId);
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet("GetClassRoomName")]
+        public async Task<IActionResult> GetClassRoomName(int subjectId)
+        {
+            try
+            {
+                if (await _blacklistService.CheckJWT() == true)
+                {
+                    return BadRequest("access token invalid");
+                }
+                var result = await _classRoom.GetClassRoomBySubjectId(subjectId);
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet("ListTopicAssignDocument")]
+        public async Task<IActionResult> ListTopicAssignDocument(int subId)
+        {
+            try
+            {
+                if (await _blacklistService.CheckJWT() == true)
+                {
+                    return BadRequest("access token invalid");
+                }
+                var result = await _subject.ListTopicAssignDocument(subId);
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet("ListLectureAssignDocument")]
+        public async Task<IActionResult> ListLectureAssignDocument(string topicName)
+        {
+            try
+            {
+                if (await _blacklistService.CheckJWT() == true)
+                {
+                    return BadRequest("access token invalid");
+                }
+                var result = await _subject.ListLectureAssignDocument(topicName);
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet("AssignDocument")]
+        public async Task<IActionResult> AssignDocument(string lecture, List<string> classRooms)
+        {
+            try
+            {
+                if (await _blacklistService.CheckJWT() == true)
+                {
+                    return BadRequest("access token invalid");
+                }
+                var result = await _subject.AssignDocument(lecture, classRooms);
                 return Ok(result);
             }
             catch

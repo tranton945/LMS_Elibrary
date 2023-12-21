@@ -2,6 +2,7 @@
 using LMS_Elibrary.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace LMS_Elibrary.Services
 {
@@ -114,7 +115,7 @@ namespace LMS_Elibrary.Services
         public async Task<Subject> SubjectOverview(int subId)
         {
             var isuser = await _getUser.user();
-            var result = await _context.Subjects.SingleOrDefaultAsync(a => a.Id == subId);
+            var result = await _context.Subjects.Include(s => s.SubjectOtherInformations).SingleOrDefaultAsync(a => a.Id == subId);
             if(result == null)
             {
                 return new Subject();
@@ -133,13 +134,14 @@ namespace LMS_Elibrary.Services
                 SubjectId = result.SubjectId,
                 SubjectName = result.SubjectName,
                 Teacher = result.Teacher,
-                Descriptions= result.Descriptions
+                Descriptions= result.Descriptions,
+                SubjectOtherInformations= result.SubjectOtherInformations,
             };
             return subject;
         }
         public async Task<Subject> SubjectOverviewPriview(int subId)
         {
-            var result = await _context.Subjects.SingleOrDefaultAsync(a => a.Id == subId);
+            var result = await _context.Subjects.Include(a => a.SubjectOtherInformations).SingleOrDefaultAsync(a => a.Id == subId);
             if (result == null)
             {
                 return new Subject();
@@ -150,7 +152,8 @@ namespace LMS_Elibrary.Services
                 SubjectId = result.SubjectId,
                 SubjectName = result.SubjectName,
                 Teacher = result.Teacher,
-                Descriptions = result.Descriptions
+                Descriptions = result.Descriptions,
+                SubjectOtherInformations= result.SubjectOtherInformations
             };
             return subject;
         }
@@ -207,5 +210,90 @@ namespace LMS_Elibrary.Services
             return null;
         }
 
+        public async Task<bool> UpdateSubjectDescriptions(int subId, string content)
+        {
+            var result = await _context.Subjects.SingleOrDefaultAsync(s => s.Id == subId);
+            if (result == null || content == null)
+            {
+                return false;
+            }
+            result.Descriptions = content ?? result.Descriptions;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<SubjectOtherInformation> AddSubjectOtherInformation(int subId, string title, string content)
+        {
+            if(subId == 0 || title == null || content == null)
+            {
+                return null;
+            }
+            var result = new SubjectOtherInformation
+            {
+                Title= title,
+                Content = content,
+                SubjectId = subId
+            };
+            _context.SubjectOtherInformations.Add(result);
+            await _context.SaveChangesAsync();
+            return result;
+        }
+
+        public async Task<bool> DeleteSubjectOtherInformation(int id)
+        {
+            var result = await _context.SubjectOtherInformations.SingleOrDefaultAsync(a => a.Id == id);
+            if(result == null)
+            {
+                return false;
+            }
+            _context.SubjectOtherInformations.Remove(result);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<List<string>> ListTopicAssignDocument(int subId)
+        {
+            var result = await _context.Topics.Include(a =>a.Subject)
+                            .Where(a => a.SubjectId== subId)
+                            .Select(d => d.TopicName)
+                            .ToListAsync();
+            return result;
+        }
+
+        public async Task<List<string>> ListLectureAssignDocument(string topicName)
+        {
+            var result = await _context.Lectures.Include(a => a.Topic)
+                            .Where(a => a.Topic.TopicName == topicName)
+                            .Select(d => d.Title)
+                            .ToListAsync();
+            return result;
+        }
+
+        public async Task<bool> AssignDocument(string lecture, List<string> classRooms)
+        {
+            if (!classRooms.Any())
+            {
+                return false;
+            }
+            var _classRooms = await _context.ClassRooms
+                .Where(classRoom => classRooms.Contains(classRoom.ClassRoomName))
+                .ToListAsync();
+            var _lecture = await _context.Lectures.SingleOrDefaultAsync(a => a.Title == lecture);
+            if(_lecture == null)
+            {
+                return false;
+            }
+            foreach (var _classRoom in _classRooms)
+            {
+                var link = new ClassRoomLectures
+                {
+                    LectureID = _lecture.Id,
+                    ClassRoomID = _classRoom.Id
+                };
+                _context.ClassRoomLectures.Add(link);
+            }
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

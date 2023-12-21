@@ -37,6 +37,9 @@ namespace LMS_Elibrary.Services
         public async Task<bool> Delete(int id)
         {
             var subject = await _context.Subjects
+                            .Include(s => s.SubjectOtherInformations)
+                            .Include(s => s.SubAccessHistories)
+                            .Include(c => c.Classes)
                             .Include(s => s.Topics)
                             .ThenInclude(t => t.Lecture)
                             .ThenInclude(l => l.Documents)

@@ -45,6 +45,7 @@ namespace LMS_Elibrary.Services
                 Title = addDocRoleTeacherModel.Lecture,
                 Descriptions = null,
                 TopicId = toppicId.Id,
+                BlockStudents = true
             };
             _context.Lectures.Add(_lecture);
             await _context.SaveChangesAsync();
@@ -293,7 +294,7 @@ namespace LMS_Elibrary.Services
         {
             var result = await _context.Documents
                                 .Include(s => s.File)
-                                .Where(f => f.File.FileName.Contains(searchString))
+                                .Where(f => f.File.FileName.Contains(searchString) && f.File.DocumentId != null)
                                 .ToListAsync();
             var DocumentTeacher = CreateListDocumentTeacher(result);
             return DocumentTeacher;
@@ -326,6 +327,34 @@ namespace LMS_Elibrary.Services
             return DocumentTeacher;
         }
 
+        public async Task<string> CreateBy()
+        {
+            var isusser = await _user.user();
+            return isusser.Name;
+        }               
 
+        public async Task<SendDocModel> SearchUploadDocument(string searchString, string type)
+        {
+            var result = await _context.Documents
+                    .Include(s => s.File)
+                    .Where(f => f.File.FileName.Contains(searchString) && f.File.DocumentId != null && f.Type.ToLower() == type.ToLower())
+                    .ToListAsync();
+            var DTO = result.Select(a => new DocumentUploadViewDTO 
+            {
+                DocumentId = a.Id,
+                Type = a.File.FileType,
+                FileName= a.File.FileName,
+                Creator = a.Creator,
+                Date = a.Date,
+                Size = a.File.FileSize
+            }).ToList();
+            var docIds = result.Select(a => a.Id).ToList();
+            var model = new SendDocModel
+            {
+                documentUploadViewDTOs = DTO,
+                documentIds = docIds
+            };
+            return model;
+        }
     }
 }
