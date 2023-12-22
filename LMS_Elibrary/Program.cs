@@ -30,6 +30,8 @@ builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IDocumentRoleTeacherRepository, DocumentRoleTeacherRepository>();
 builder.Services.AddScoped<IAnswersRepository, AnswersRepository>();
 builder.Services.AddScoped<IClassRoomNotificationRepository, ClassRoomNotificationRepository>();
+builder.Services.AddScoped<IManageLessionRepository, ManageLessionRepository>();
+builder.Services.AddScoped<IManageResourceRepository, ManageResourceRepository>();
 builder.Services.AddScoped<IRoles, Roles>();
 builder.Services.AddScoped<GetUser>();
 builder.Services.AddScoped<CreateAdminAccount>();

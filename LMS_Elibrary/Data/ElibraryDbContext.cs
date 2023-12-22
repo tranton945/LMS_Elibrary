@@ -25,5 +25,6 @@ namespace LMS_Elibrary.Data
         public DbSet<SelectedUser> SelectedUsers { get; set; }
         public DbSet<SubjectOtherInformation> SubjectOtherInformations { get; set; }
         public DbSet<ClassRoomLectures> ClassRoomLectures { get; set; }
+        public DbSet<Teacher> Teachers { get; set; }
     }
 }

@@ -10,5 +10,6 @@ namespace LMS_Elibrary.Services
         public Task<bool> Update(ClassRoom classRoom, int subId, int id);
         public Task<bool> Delete(int id);
         public Task<List<string>> GetClassRoomBySubjectId(int subjectID);
+        public Task<List<string>> GetClassRoomBySubjectName(string subjectName);
     }
 }

@@ -4,6 +4,7 @@ using LMS_Elibrary.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS_Elibrary.Migrations
 {
     [DbContext(typeof(ElibraryDbContext))]
-    partial class ElibraryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231222071605_doc add Updater and LastUpdate, add teacher, link doc to sub")]
+    partial class docaddUpdaterandLastUpdateaddteacherlinkdoctosub
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,7 +54,7 @@ namespace LMS_Elibrary.Migrations
 
                     b.HasIndex("QuenstionId");
 
-                    b.ToTable("Answers", (string)null);
+                    b.ToTable("Answers");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.ApplicationUser", b =>
@@ -154,7 +156,7 @@ namespace LMS_Elibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BlacklistedTokens", (string)null);
+                    b.ToTable("BlacklistedTokens");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.ClassRoom", b =>
@@ -185,7 +187,7 @@ namespace LMS_Elibrary.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("ClassRooms", (string)null);
+                    b.ToTable("ClassRooms");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.ClassRoomLectures", b =>
@@ -208,7 +210,7 @@ namespace LMS_Elibrary.Migrations
 
                     b.HasIndex("LectureID");
 
-                    b.ToTable("ClassRoomLectures", (string)null);
+                    b.ToTable("ClassRoomLectures");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.ClassRoomNotification", b =>
@@ -235,7 +237,7 @@ namespace LMS_Elibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ClassRoomNotifications", (string)null);
+                    b.ToTable("ClassRoomNotifications");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.ClassRoomNotificationLink", b =>
@@ -258,7 +260,7 @@ namespace LMS_Elibrary.Migrations
 
                     b.HasIndex("ClassRoomNotificationId");
 
-                    b.ToTable("ClassRoomNotificationLinks", (string)null);
+                    b.ToTable("ClassRoomNotificationLinks");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.Document", b =>
@@ -310,7 +312,7 @@ namespace LMS_Elibrary.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("Documents", (string)null);
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.File", b =>
@@ -352,7 +354,7 @@ namespace LMS_Elibrary.Migrations
                         .IsUnique()
                         .HasFilter("[PrivateFilesId] IS NOT NULL");
 
-                    b.ToTable("Files", (string)null);
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.Lecture", b =>
@@ -380,7 +382,7 @@ namespace LMS_Elibrary.Migrations
 
                     b.HasIndex("TopicId");
 
-                    b.ToTable("Lectures", (string)null);
+                    b.ToTable("Lectures");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.LikeQuestions", b =>
@@ -402,7 +404,7 @@ namespace LMS_Elibrary.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("LikeQuestions", (string)null);
+                    b.ToTable("LikeQuestions");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.PrivateFile", b =>
@@ -422,7 +424,7 @@ namespace LMS_Elibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PrivateFiles", (string)null);
+                    b.ToTable("PrivateFiles");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.Questions", b =>
@@ -474,7 +476,7 @@ namespace LMS_Elibrary.Migrations
 
                     b.HasIndex("TopicId");
 
-                    b.ToTable("Questions", (string)null);
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.SelectedUser", b =>
@@ -496,7 +498,7 @@ namespace LMS_Elibrary.Migrations
 
                     b.HasIndex("ClassRoomNotificationId");
 
-                    b.ToTable("SelectedUsers", (string)null);
+                    b.ToTable("SelectedUsers");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.SubAccessHistory", b =>
@@ -521,7 +523,7 @@ namespace LMS_Elibrary.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("SubAccessHistories", (string)null);
+                    b.ToTable("SubAccessHistories");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.Subject", b =>
@@ -555,7 +557,7 @@ namespace LMS_Elibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Subjects", (string)null);
+                    b.ToTable("Subjects");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.SubjectOtherInformation", b =>
@@ -581,7 +583,7 @@ namespace LMS_Elibrary.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("SubjectOtherInformations", (string)null);
+                    b.ToTable("SubjectOtherInformations");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.Teacher", b =>
@@ -603,7 +605,7 @@ namespace LMS_Elibrary.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("Teachers", (string)null);
+                    b.ToTable("Teachers");
                 });
 
             modelBuilder.Entity("LMS_Elibrary.Data.Topic", b =>
@@ -625,7 +627,7 @@ namespace LMS_Elibrary.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("Topics", (string)null);
+                    b.ToTable("Topics");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

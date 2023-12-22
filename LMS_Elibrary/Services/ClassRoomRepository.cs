@@ -60,6 +60,21 @@ namespace LMS_Elibrary.Services
             className.Insert(0, "Tùy chon lớp học");
             return className;
         }
+        public async Task<List<string>> GetClassRoomBySubjectName(string subjectName)
+        {
+            var subject = await _context.Subjects.SingleOrDefaultAsync(a => a.SubjectName == subjectName);
+            if(subject == null)
+            {
+                return new List<string>
+                {
+                    "Subject Not Found"
+                };
+            }
+            var result = await _context.ClassRooms.Where(a => a.SubjectId == subject.Id).ToListAsync();
+            var className = result.Select(a => a.ClassRoomName).ToList();
+            className.Insert(0, "Tùy chon lớp học");
+            return className;
+        }
 
         public async Task<bool> Update(ClassRoom classRoom, int SubjectId, int id)
         {

@@ -21,10 +21,18 @@ namespace LMS_Elibrary.Data
 
         public string? Note { get; set; }
 
+        public string Updater { get; set; }
+        public DateTime LastUpdate { get; set; }
+
         public int? LectureID { get; set; }
         [ForeignKey(nameof(LectureID))]
         [JsonIgnore]
         public Lecture? Lecture { get; set; }
+
+        public int? SubjectId { get; set; }
+        [ForeignKey(nameof(SubjectId))]
+        [JsonIgnore]
+        public Subject? Subject { get; set; }
 
         //public ICollection<File>? Files { get; set; }
         public File? File { get; set; }

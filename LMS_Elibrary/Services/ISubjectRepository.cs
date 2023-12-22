@@ -21,6 +21,9 @@ namespace LMS_Elibrary.Services
         public Task<bool> Delete(int id);
 
         public Task UpdateApproveDoc(int Id);
+        public Task<bool> AddTeacherToSubject(int subjectId, string name);
+
+
 
     }
 }

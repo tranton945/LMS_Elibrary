@@ -18,6 +18,11 @@ namespace LMS_Elibrary.Data
         [ForeignKey(nameof(SubjectId))]
         public Subject? Subject { get; set; }
 
+        public int? TeacherId { get; set; }
+        [ForeignKey(nameof(TeacherId))]
+        [JsonIgnore]
+        public Teacher? Teacher { get; set; }
+
         public ICollection<Questions>? Questions { get; set; }
         public ICollection<ClassRoomNotificationLink>? ClassRoomNotificationLinks { get; set; }
     }

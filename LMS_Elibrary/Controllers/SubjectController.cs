@@ -220,6 +220,27 @@ namespace LMS_Elibrary.Controllers
                 return BadRequest();
             }
         }
+        [HttpPost("AddTeacherToSubject")]
+        public async Task<IActionResult> AddTeacherToSubject(int subjectId, string teacherName)
+        {
+            try
+            {
+                if (await _blacklistService.CheckJWT() == true)
+                {
+                    return BadRequest("access token invalid");
+                }
+                var result = await _subject.AddTeacherToSubject(subjectId, teacherName);
+                if(result == false)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
 
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(int id)

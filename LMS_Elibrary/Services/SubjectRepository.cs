@@ -1,5 +1,6 @@
 ﻿using LMS_Elibrary.Data;
 using LMS_Elibrary.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Principal;
 
@@ -8,10 +9,14 @@ namespace LMS_Elibrary.Services
     public class SubjectRepository : ISubjectRepository
     {
         private readonly ElibraryDbContext _context;
+        private readonly GetUser _getUser;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public SubjectRepository(ElibraryDbContext context) 
+        public SubjectRepository(ElibraryDbContext context, GetUser getUser, UserManager<ApplicationUser> userManager) 
         {
             _context = context;
+            _getUser = getUser;
+            _userManager = userManager;
         }
         public async Task<Subject> Add(Subject subject)
         {
@@ -283,6 +288,27 @@ namespace LMS_Elibrary.Services
             return new List<SubjectLeadershipDTO>();
         }
 
-        
+        public async Task<bool> AddTeacherToSubject(int subjectId, string name)
+        {
+            var user = await _userManager.FindByNameAsync(name);
+            if (user == null)
+            {
+                return false;
+            }
+            var subject = await _context.Subjects.SingleOrDefaultAsync(a => a.Id == subjectId);
+            if (subject == null)
+            {
+                return false;
+            }
+            var addTeacher = new Teacher
+            {
+                SubjectId = subjectId,
+                UserId = user.Id,
+            };
+            _context.Teachers.Add(addTeacher);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

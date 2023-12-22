@@ -22,6 +22,5 @@ namespace LMS_Elibrary.Services
         public Task<SendDocModel> SearchUploadDocument(string searchString, string type);
 
 
-
     }
 }

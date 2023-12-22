@@ -23,5 +23,7 @@ namespace LMS_Elibrary.Data
         public ICollection<Topic>? Topics { get; set; }
         public ICollection<ClassRoom>? Classes { get; set; }
         public ICollection<SubjectOtherInformation>? SubjectOtherInformations { get; set; }
+        public ICollection<Teacher>? Teachers { get; set; }
+        public ICollection<Document>? Documents { get; set; }
     }
 }

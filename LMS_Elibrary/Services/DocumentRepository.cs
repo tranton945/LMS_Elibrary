@@ -30,6 +30,8 @@ namespace LMS_Elibrary.Services
                 ApproveDate = null,
                 Note = null,
                 LectureID = document.LectureID,
+                Updater = isuser.Name,
+                LastUpdate = DateTime.Now
             };
             _context.Documents.Add(doc);
             await _context.SaveChangesAsync();

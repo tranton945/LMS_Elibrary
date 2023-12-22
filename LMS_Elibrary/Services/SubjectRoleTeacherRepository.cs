@@ -271,7 +271,7 @@ namespace LMS_Elibrary.Services
 
         public async Task<bool> AssignDocument(string lecture, List<string> classRooms)
         {
-            if (!classRooms.Any())
+            if (classRooms != null && !classRooms.Any())
             {
                 return false;
             }
