@@ -4,6 +4,7 @@ using LMS_Elibrary.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS_Elibrary.Migrations
 {
     [DbContext(typeof(ElibraryDbContext))]
-    partial class ElibraryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231223030723_update MCQuestions")]
+    partial class updateMCQuestions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -425,39 +427,6 @@ namespace LMS_Elibrary.Migrations
                     b.ToTable("MCAnswers");
                 });
 
-            modelBuilder.Entity("LMS_Elibrary.Data.MCQuestionFiles", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<byte[]>("FileData")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("FileSize")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FileType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("MCQuestionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MCQuestionId");
-
-                    b.ToTable("MCQuestionFiles");
-                });
-
             modelBuilder.Entity("LMS_Elibrary.Data.MCQuestions", b =>
                 {
                     b.Property<int>("Id")
@@ -466,17 +435,14 @@ namespace LMS_Elibrary.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Creater")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("LastUpdate")
+                    b.Property<DateTime>("LastUpdate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Level")
@@ -494,6 +460,7 @@ namespace LMS_Elibrary.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Updator")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("isSingleChoice")
@@ -1020,15 +987,6 @@ namespace LMS_Elibrary.Migrations
                     b.Navigation("Questions");
                 });
 
-            modelBuilder.Entity("LMS_Elibrary.Data.MCQuestionFiles", b =>
-                {
-                    b.HasOne("LMS_Elibrary.Data.MCQuestions", "MCQuestion")
-                        .WithMany("MCQuestionFile")
-                        .HasForeignKey("MCQuestionId");
-
-                    b.Navigation("MCQuestion");
-                });
-
             modelBuilder.Entity("LMS_Elibrary.Data.MCQuestions", b =>
                 {
                     b.HasOne("LMS_Elibrary.Data.SubjectGroup", "SubjectGroup")
@@ -1229,8 +1187,6 @@ namespace LMS_Elibrary.Migrations
 
             modelBuilder.Entity("LMS_Elibrary.Data.MCQuestions", b =>
                 {
-                    b.Navigation("MCQuestionFile");
-
                     b.Navigation("QuestionAnswerMapping");
                 });
 

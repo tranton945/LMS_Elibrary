@@ -26,5 +26,10 @@ namespace LMS_Elibrary.Data
         public DbSet<SubjectOtherInformation> SubjectOtherInformations { get; set; }
         public DbSet<ClassRoomLectures> ClassRoomLectures { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<SubjectGroup> SubjectGroups { get; set; }
+        public DbSet<MCQuestions> MCQuestions { get; set; }
+        public DbSet<MCAnswers> MCAnswers { get; set; }
+        public DbSet<QuestionAnswerMapping> QuestionAnswerMapping { get; set; }
+        public DbSet<MCQuestionFiles> MCQuestionFiles { get; set; }
     }
 }
