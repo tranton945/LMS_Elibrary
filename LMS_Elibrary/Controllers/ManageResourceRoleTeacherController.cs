@@ -2,13 +2,16 @@
 using LMS_Elibrary.Helper;
 using LMS_Elibrary.Migrations;
 using LMS_Elibrary.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace LMS_Elibrary.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Teacher, Admin")]
     public class ManageResourceRoleTeacherController : ControllerBase
     {
         private readonly ElibraryDbContext _context;

@@ -9,7 +9,7 @@ namespace LMS_Elibrary.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Teacher, Admin")]
     public class MCQuestionController : ControllerBase
     {
         private readonly IMCQuestionRepository _mCQuestion;

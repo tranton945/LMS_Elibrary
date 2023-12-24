@@ -10,7 +10,7 @@ namespace LMS_Elibrary.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Teacher, Admin")]
     public class AnswerController : ControllerBase
     {
         private readonly IAnswersRepository _answers;

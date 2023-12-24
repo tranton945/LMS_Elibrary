@@ -9,7 +9,7 @@ namespace LMS_Elibrary.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Admin, Leadership")]
     public class StudentController : ControllerBase
     {
         private readonly IHomeStudentRepository _homeStudent;

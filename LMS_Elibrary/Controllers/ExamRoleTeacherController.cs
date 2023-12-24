@@ -10,6 +10,7 @@ namespace LMS_Elibrary.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [Authorize(Roles = "Teacher, Admin")]
     public class ExamRoleTeacherController : ControllerBase
     {
         private readonly IExamRepository _exam;

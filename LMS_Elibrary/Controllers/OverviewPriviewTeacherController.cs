@@ -9,6 +9,7 @@ namespace LMS_Elibrary.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [Authorize(Roles = "Teacher, Admin")]
     public class OverviewPriviewTeacherController : ControllerBase
     {
         private readonly BlacklistService _blacklist;
