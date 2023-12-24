@@ -4,6 +4,7 @@ using LMS_Elibrary.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS_Elibrary.Migrations
 {
     [DbContext(typeof(ElibraryDbContext))]
-    partial class ElibraryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231224134235_student, FavoriteSubjects")]
+    partial class studentFavoriteSubjects
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -885,38 +887,6 @@ namespace LMS_Elibrary.Migrations
                     b.ToTable("SubjectGroups");
                 });
 
-            modelBuilder.Entity("LMS_Elibrary.Data.SubjectNotification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SubjectId");
-
-                    b.ToTable("SubjectNotifications");
-                });
-
             modelBuilder.Entity("LMS_Elibrary.Data.SubjectOtherInformation", b =>
                 {
                     b.Property<int>("Id")
@@ -1420,17 +1390,6 @@ namespace LMS_Elibrary.Migrations
                     b.Navigation("Subject");
                 });
 
-            modelBuilder.Entity("LMS_Elibrary.Data.SubjectNotification", b =>
-                {
-                    b.HasOne("LMS_Elibrary.Data.Subject", "Subject")
-                        .WithMany("SubjectNotifications")
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Subject");
-                });
-
             modelBuilder.Entity("LMS_Elibrary.Data.SubjectOtherInformation", b =>
                 {
                     b.HasOne("LMS_Elibrary.Data.Subject", "Subject")
@@ -1606,8 +1565,6 @@ namespace LMS_Elibrary.Migrations
                     b.Navigation("Students");
 
                     b.Navigation("SubAccessHistories");
-
-                    b.Navigation("SubjectNotifications");
 
                     b.Navigation("SubjectOtherInformations");
 

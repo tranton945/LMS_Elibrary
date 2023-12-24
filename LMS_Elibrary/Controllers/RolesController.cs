@@ -8,7 +8,7 @@ namespace LMS_Elibrary.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Leadership")]
     public class RolesController : ControllerBase
     {
         private readonly IRoles _roles;

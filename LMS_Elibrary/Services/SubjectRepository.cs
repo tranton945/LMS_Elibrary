@@ -310,5 +310,27 @@ namespace LMS_Elibrary.Services
 
             return true;
         }
+        public async Task<bool> AddStudentToSubject(int subjectId, string name)
+        {
+            var user = await _userManager.FindByNameAsync(name);
+            if (user == null)
+            {
+                return false;
+            }
+            var subject = await _context.Subjects.SingleOrDefaultAsync(a => a.Id == subjectId);
+            if (subject == null)
+            {
+                return false;
+            }
+            var addStudent = new Student
+            {
+                SubjectId = subjectId,
+                UserId = user.Id,
+            };
+            _context.Students.Add(addStudent);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

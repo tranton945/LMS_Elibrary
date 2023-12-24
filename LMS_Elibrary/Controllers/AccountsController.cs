@@ -51,7 +51,7 @@ namespace LMS_Elibrary.Controllers
         }
 
         [HttpGet("GetAllAccounts")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Leadership")]
         //[Authorize]
         public async Task<IActionResult> GetAllAccounts()
         {
@@ -71,7 +71,7 @@ namespace LMS_Elibrary.Controllers
         }
 
         [HttpGet("SelectAccountByEmail")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Leadership")]
         public async Task<IActionResult> GetAccountByEmail(string email)
         {
             try
@@ -89,7 +89,6 @@ namespace LMS_Elibrary.Controllers
             }
         }
         [HttpPut("UpdateAccount")]
-        [Authorize(Roles = "Admin")]
         [Authorize]
         public async Task<IActionResult> UpdateAccount(string email, string newName, DateTime newDateOfBirt, string newGender, string newPhoneNumber, string newTeacherID, string newAddress)
         {
@@ -108,7 +107,6 @@ namespace LMS_Elibrary.Controllers
             }
         }
         [HttpPut("UpdateAvatar")]
-        [Authorize(Roles = "Admin")]
         [Authorize]
         public async Task<IActionResult> UpdateAvatar(IFormFile fileAvatar)
         {
@@ -128,7 +126,6 @@ namespace LMS_Elibrary.Controllers
         }
 
         [HttpPut("UpdatePassword")]
-        //[Authorize(Roles = "Admin")]
         [Authorize]
         public async Task<IActionResult> UpdatePassword(ChangePasswordModel model)
         {
@@ -148,7 +145,7 @@ namespace LMS_Elibrary.Controllers
         }
 
         [HttpDelete("DeleteAccount")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Leadership")]
         public async Task<IActionResult> DeleteAccount(string email)
         {
             try
@@ -166,7 +163,7 @@ namespace LMS_Elibrary.Controllers
             }
         }
         [HttpGet("SelectAccountRole")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Leadership")]
         public async Task<IActionResult> SelectAccountRole(string email)
         {
             try

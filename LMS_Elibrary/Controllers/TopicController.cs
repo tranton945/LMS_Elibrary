@@ -9,7 +9,7 @@ namespace LMS_Elibrary.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Teacher, Admin, Leadership")]
     public class TopicController : ControllerBase
     {
         private readonly ITopicRepository _topic;

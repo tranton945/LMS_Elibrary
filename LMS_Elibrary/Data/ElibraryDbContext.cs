@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS_Elibrary.Data
@@ -34,5 +35,10 @@ namespace LMS_Elibrary.Data
         public DbSet<Exams> Exams { get; set; }
         public DbSet<EssayQuestions> EssayQuestions { get; set; }
         public DbSet<EQuestAnswerFile> EQuestAnswerFiles { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<UserNotification> UserNotifications { get; set; }
+        public DbSet<FavoriteSubjects> FavoriteSubjects { get; set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<SubjectNotification> SubjectNotifications { get; set; }
     }
 }

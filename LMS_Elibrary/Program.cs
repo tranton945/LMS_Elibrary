@@ -1,4 +1,5 @@
 using LMS_Elibrary.Data;
+using LMS_Elibrary.Migrations;
 using LMS_Elibrary.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -36,6 +37,11 @@ builder.Services.AddScoped<ISubjectGroupRepository, SubjectGroupRepository>();
 builder.Services.AddScoped<IMCAnswerRepository, MCAnswerRepository>();
 builder.Services.AddScoped<IMCQuestionRepository, MCQuestionRepository>();
 builder.Services.AddScoped<IExamRepository, ExamRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<IHomeLeadershipRepository, HomeLeadershipRepository>();
+builder.Services.AddScoped<IHomeTeacherRepository, HomeTeacherRepository>();
+builder.Services.AddScoped<ISubjectNotificationRepository, SubjectNotificationRepository>();
+builder.Services.AddScoped<IHomeStudentRepository, HomeStudentRepository>();
 builder.Services.AddScoped<IRoles, Roles>();
 builder.Services.AddScoped<GetUser>();
 builder.Services.AddScoped<CreateAdminAccount>();

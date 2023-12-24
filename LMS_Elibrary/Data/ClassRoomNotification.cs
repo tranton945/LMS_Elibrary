@@ -11,7 +11,6 @@ namespace LMS_Elibrary.Data
         public string Title { get; set; }
         public string? Content { get; set; }
         public string CreatorId { get; set; }
-        //public List<string>? StudentID { get; set; }
         public DateTime Date { get; set; }
         public ICollection<ClassRoomNotificationLink>? ClassRoomNotificationLinks { get; set; }
         public ICollection<SelectedUser>? SelectedUsers { get; set; }

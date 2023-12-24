@@ -22,6 +22,7 @@ namespace LMS_Elibrary.Services
 
         public Task UpdateApproveDoc(int Id);
         public Task<bool> AddTeacherToSubject(int subjectId, string name);
+        public Task<bool> AddStudentToSubject(int subjectId, string name);
 
 
 

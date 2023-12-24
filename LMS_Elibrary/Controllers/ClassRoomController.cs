@@ -8,7 +8,7 @@ namespace LMS_Elibrary.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Teacher, Admin, Leadership")]
     public class ClassRoomController : ControllerBase
     {
         private readonly IClassRoomRepository _classRoom;

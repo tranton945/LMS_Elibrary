@@ -9,7 +9,7 @@ namespace LMS_Elibrary.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Teacher")]
     public class ClassRoomNotificationController : ControllerBase
     {
         private readonly BlacklistService _blacklist;

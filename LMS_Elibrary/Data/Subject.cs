@@ -26,5 +26,8 @@ namespace LMS_Elibrary.Data
         public ICollection<Teacher>? Teachers { get; set; }
         public ICollection<Document>? Documents { get; set; }
         public ICollection<Exams>? Exams { get; set; }
+        public ICollection<FavoriteSubjects>? FavoriteSubjects { get; set; }
+        public ICollection<Student>? Students { get; set; }
+        public ICollection<SubjectNotification>? SubjectNotifications { get; set; }
     }
 }
