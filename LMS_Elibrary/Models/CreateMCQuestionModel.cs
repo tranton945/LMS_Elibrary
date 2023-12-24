@@ -7,5 +7,6 @@
         public bool isSingleChoice { get; set; }
         public string SubjectGroup { get; set; }
         public string Subject { get; set; }
+        public int? examId { get; set; }
     }
 }

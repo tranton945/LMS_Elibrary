@@ -62,7 +62,8 @@ namespace LMS_Elibrary.Services
                     Updator = isusser.Name,
                     LastUpdate = DateTime.Now,
                     SubjectId = subject.Id,
-                    SubjectGroupId = subjectGroup.Id
+                    SubjectGroupId = subjectGroup.Id,
+                    ExamId = MCQuestion.examId,
                 };
                 _context.MCQuestions.Add(_newQ);
                 await _context.SaveChangesAsync();

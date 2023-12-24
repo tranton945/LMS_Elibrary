@@ -25,5 +25,6 @@ namespace LMS_Elibrary.Data
         public ICollection<SubjectOtherInformation>? SubjectOtherInformations { get; set; }
         public ICollection<Teacher>? Teachers { get; set; }
         public ICollection<Document>? Documents { get; set; }
+        public ICollection<Exams>? Exams { get; set; }
     }
 }

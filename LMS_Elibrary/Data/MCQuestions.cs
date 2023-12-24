@@ -24,6 +24,11 @@ namespace LMS_Elibrary.Data
         [ForeignKey(nameof(SubjectGroupId))]
         [JsonIgnore]
         public SubjectGroup? SubjectGroup { get; set; }
+        public int? ExamId { get; set; }
+        [ForeignKey(nameof(ExamId))]
+        [JsonIgnore]
+        public Exams? Exams { get; set; }
+
         public ICollection<QuestionAnswerMapping>? QuestionAnswerMapping { get; set; }
         public ICollection<MCQuestionFiles>? MCQuestionFile { get; set; }
     }

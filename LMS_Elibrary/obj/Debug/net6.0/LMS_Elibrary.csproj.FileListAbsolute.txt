@@ -256,3 +256,9 @@ D:\ojt\Elibrary\source\LMS_Elibrary\LMS_Elibrary\bin\Debug\net6.0\runtimes\unix\
 D:\ojt\Elibrary\source\LMS_Elibrary\LMS_Elibrary\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
 D:\ojt\Elibrary\source\LMS_Elibrary\LMS_Elibrary\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 D:\ojt\Elibrary\source\LMS_Elibrary\LMS_Elibrary\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+D:\ojt\Elibrary\source\LMS_Elibrary\LMS_Elibrary\bin\Debug\net6.0\EPPlus.dll
+D:\ojt\Elibrary\source\LMS_Elibrary\LMS_Elibrary\bin\Debug\net6.0\EPPlus.Interfaces.dll
+D:\ojt\Elibrary\source\LMS_Elibrary\LMS_Elibrary\bin\Debug\net6.0\EPPlus.System.Drawing.dll
+D:\ojt\Elibrary\source\LMS_Elibrary\LMS_Elibrary\bin\Debug\net6.0\Microsoft.IO.RecyclableMemoryStream.dll
+D:\ojt\Elibrary\source\LMS_Elibrary\LMS_Elibrary\bin\Debug\net6.0\System.Security.Cryptography.Pkcs.dll
+D:\ojt\Elibrary\source\LMS_Elibrary\LMS_Elibrary\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.Pkcs.dll

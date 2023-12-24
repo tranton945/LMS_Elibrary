@@ -31,5 +31,8 @@ namespace LMS_Elibrary.Data
         public DbSet<MCAnswers> MCAnswers { get; set; }
         public DbSet<QuestionAnswerMapping> QuestionAnswerMapping { get; set; }
         public DbSet<MCQuestionFiles> MCQuestionFiles { get; set; }
+        public DbSet<Exams> Exams { get; set; }
+        public DbSet<EssayQuestions> EssayQuestions { get; set; }
+        public DbSet<EQuestAnswerFile> EQuestAnswerFiles { get; set; }
     }
 }

@@ -35,6 +35,7 @@ builder.Services.AddScoped<IManageResourceRepository, ManageResourceRepository>(
 builder.Services.AddScoped<ISubjectGroupRepository, SubjectGroupRepository>();
 builder.Services.AddScoped<IMCAnswerRepository, MCAnswerRepository>();
 builder.Services.AddScoped<IMCQuestionRepository, MCQuestionRepository>();
+builder.Services.AddScoped<IExamRepository, ExamRepository>();
 builder.Services.AddScoped<IRoles, Roles>();
 builder.Services.AddScoped<GetUser>();
 builder.Services.AddScoped<CreateAdminAccount>();
